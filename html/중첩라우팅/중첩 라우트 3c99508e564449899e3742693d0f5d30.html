@@ -1,0 +1,1049 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>중첩 라우트</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-default_background {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(0, 0, 0, 0.06); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="3c99508e-5644-4989-9e37-42693d0f5d30" class="page sans"><header><h1 class="page-title">중첩 라우트</h1><p class="page-description"></p></header><div class="page-body"><h1 id="9665845f-5d18-49f2-a587-4fd5b8903d16" class="">중첩된 라우트</h1><p id="84b5c842-e21e-46a8-8c58-7335c1307dab" class="">리액트에서 중첩된 라우트(Nested Route)란 라우트 안에 또 다른 라우트를 중첩시켜 구성하는 것을 의미한다. </p><p id="1b2cd84b-0150-4a2d-a9a9-0f55743c9b3f" class="">중첩된 라우트는 복잡한 UI를 구성하는 데 매우 유용하며, 대규모 애플리케이션에서도 유지보수성을 높이는 데 도움이 된다.</p><p id="7e6a2bd1-91dc-4c75-a29f-941ccbf942ba" class="">중첩된 라우트를 구현하려면, Route 컴포넌트를 중첩해서 사용하면 됩니다.</p><p id="ae777beb-faf7-474f-8144-3e57d5002c20" class="">
+</p><h2 id="9e246bda-ea83-4425-a765-c26ac6ced836" class="">게시글 목록 페이지와 게시글 읽기 페이지 생성</h2><h3 id="acb6bc2c-9543-4aff-87d5-3fb9ff025aed" class="">pages/Article.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="41bec12e-bce8-4ed9-8309-82741186140a" class="code"><code class="language-TypeScript">import { useParams } from &quot;react-router-dom&quot;;
+
+function Article() {
+  const { id } = useParams();
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;게시글 {id}&lt;/h2&gt; 
+    &lt;/div&gt;
+  );
+}
+
+export default Article;</code></pre><p id="2bb0d810-d417-4df1-b95f-65074e07fe0c" class=""><strong>const { id } = useParams();</strong><div class="indented"><p id="d9dcbc61-8c71-4850-94c7-bd769039af91" class="">쿼리 파라미터를 id로 할당</p></div></p><p id="88ee26ac-1c7a-40eb-bf25-1e06e44e7575" class=""><strong>&lt;h2&gt;게시글 {id}&lt;/h2&gt;</strong><div class="indented"><p id="4f889637-72d6-4172-b7f7-6c417f6ec27f" class="">제목 태그로 화면에 출력</p></div></p><h3 id="4c6e0efc-64b4-4589-a502-e7cd951f2936" class="">pages/Articles.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="7218d113-e234-42fa-b685-fd37237d79fb" class="code"><code class="language-TypeScript">import { Link } from &quot;react-router-dom&quot;;
+
+function Articles() {
+  return (
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;Link to=&quot;/articles/1&quot;&gt;게시글 1&lt;/Link&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;Link to=&quot;/articles/2&quot;&gt;게시글 2&lt;/Link&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;Link to=&quot;/articles/3&quot;&gt;게시글 3&lt;/Link&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  );
+}
+
+export default Articles;</code></pre><p id="10a6ebcd-97fb-4a4b-8692-6dfde5d4bcb1" class=""><strong>&lt;Link to=&quot;/articles/1&quot;&gt;게시글 1&lt;/Link&gt;</strong><div class="indented"><p id="3144ebb3-1827-4849-96da-4fbb7ef4839f" class="">링크를 클릭하면 행당 파라미터 경로로 이동</p></div></p><p id="e74f0652-685e-4b6f-880d-e5f6e619440f" class="">
+</p><p id="b07ce921-8025-4296-8b79-2326a52bb705" class="">Article과 Articles 컴포넌트를 다 만들었다면 App컴포넌트에서 해당 페이지들의 라우트를 설정해보자</p><h3 id="844ae43c-f7b7-44eb-9952-960756a3c380" class="">App.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="e3bca8f5-faf4-4cc8-993a-e7c7392f1dc5" class="code"><code class="language-TypeScript">import { Route, Routes } from &quot;react-router-dom&quot;;
+import About from &quot;./pages/About&quot;;
+import Article from &quot;./pages/Article&quot;;
+import Articles from &quot;./pages/Articles&quot;;
+import Home from &quot;./pages/Home&quot;;
+import Profile from &quot;./pages/Profile&quot;;
+
+function App() {
+  return (
+		&lt;Routes&gt;
+			&lt;Route path=&quot;/&quot; element={&lt;Home /&gt;} /&gt;
+			&lt;Route path=&quot;/about&quot; element={&lt;About /&gt;} /&gt;
+			&lt;Route path=&quot;/profiles/:username&quot; element={&lt;Profile /&gt;} /&gt;
+			&lt;Route path=&quot;/articles&quot; element={&lt;Articles /&gt;} /&gt;
+			&lt;Route path=&quot;/articles/:id&quot; element={&lt;Article /&gt;} /&gt;
+		&lt;/Routes&gt;
+  );
+}
+
+export default App;</code></pre><p id="585dccb3-d2a4-43d8-8a8f-f0271c0560d8" class="">
+</p><p id="36422f4c-e52b-4e5f-af56-c549f3455244" class="">Home 컴포넌트에서 게시글 목록 페이지로 가는 링크 추가</p><h3 id="aac07efa-372c-4cf2-8975-56c921689aaf" class="">pages/Home.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="07d2c514-9fff-468c-bd19-cb8b8f315007" class="code"><code class="language-TypeScript">import { Link } from &quot;react-router-dom&quot;;
+
+function Home() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Home&lt;/h1&gt;
+      &lt;p&gt;가장 먼저 보여지는 페이지입니다.&lt;/p&gt;
+      &lt;ul&gt;
+        &lt;li&gt;
+          &lt;Link to=&quot;/about&quot;&gt;About&lt;/Link&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+          &lt;Link to=&quot;/profiles/chanwoong1&quot;&gt;profile1&lt;/Link&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+          &lt;Link to=&quot;/profiles/abcd&quot;&gt;profile2&lt;/Link&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+          &lt;Link to=&quot;/profiles/void&quot;&gt;존재하지 않는 프로필&lt;/Link&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+          &lt;Link to=&quot;/articles&quot;&gt;게시글 목록&lt;/Link&gt;
+        &lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default Home;</code></pre><figure id="45cbca42-9a70-47a3-9d73-7dbcce4e3fe4" class="image" style="text-align:left"><a href="Untitled.png"><img style="width:538px" src="Untitled.png"/></a></figure><figure id="44ce2f6d-7582-485e-9a30-ac59e76cb95b" class="image" style="text-align:left"><a href="Untitled%201.png"><img style="width:662px" src="Untitled%201.png"/></a></figure><p id="db2e6722-4ea0-4a6a-aa2b-fa628ebad9b4" class="">
+</p><h2 id="b2b22726-7940-46c8-ab46-15a3ada01cc7" class="">중첩된 라우트 설정</h2><h3 id="a6fad3d7-37bc-48dc-94c8-0901619ff06a" class="">App.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="922060fa-9309-4a6a-b92a-013fd7c5af8d" class="code"><code class="language-TypeScript">import { Route, Routes } from &quot;react-router-dom&quot;;
+import About from &quot;./pages/About&quot;;
+import Article from &quot;./pages/Article&quot;;
+import Articles from &quot;./pages/Articles&quot;;
+import Home from &quot;./pages/Home&quot;;
+import Profile from &quot;./pages/Profile&quot;;
+
+function App() {
+  return (
+		&lt;Routes&gt;
+			&lt;Route path=&quot;/&quot; element={&lt;Home /&gt;} /&gt;
+			&lt;Route path=&quot;/about&quot; element={&lt;About /&gt;} /&gt;
+			&lt;Route path=&quot;/profiles/:username&quot; element={&lt;Profile /&gt;} /&gt;
+			&lt;Route path=&quot;/articles&quot; element={&lt;Articles /&gt;}&gt;
+      	&lt;Route path=&quot;:id&quot; element={&lt;Article /&gt;} /&gt;
+    	&lt;/Route&gt;
+		&lt;/Routes&gt;
+  );
+}
+
+export default App;</code></pre><p id="2fefb20d-29b6-47f4-9be8-ef35e76db056" class="">
+</p><h3 id="8930b90c-8406-43be-9de2-544453a32166" class="">pages/Articles.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1b73a57b-32fb-43f2-8ae6-ec2fd91c8f9c" class="code"><code class="language-TypeScript">import { Link, Outlet } from &quot;react-router-dom&quot;;
+
+function Articles() {
+  return (
+    &lt;div&gt;
+      &lt;Outlet /&gt;
+      &lt;ul&gt;
+        &lt;li&gt;
+          &lt;Link to=&quot;/articles/1&quot;&gt;게시글 1&lt;/Link&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+          &lt;Link to=&quot;/articles/2&quot;&gt;게시글 2&lt;/Link&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+          &lt;Link to=&quot;/articles/3&quot;&gt;게시글 3&lt;/Link&gt;
+        &lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default Articles;</code></pre><p id="0cbbcae6-c7b8-408f-a9f6-f420b1c77f51" class="">여기서 사용된 Outlet은 리액트에서 사용되는 컴포넌트로, 중첩된 라우트를 렌더링할 때 사용된다. </p><p id="829f73db-3789-4bd1-bb50-b4dad64a2bd3" class="">Outlet은 라우터가 경로에 따라 렌더링할 수 있는 컴포넌트를 찾아서 그 결과를 렌더링해준다.</p><p id="f0350b1f-dcac-47d9-bd58-000698f8d9a6" class="">
+</p><p id="497770fe-0a5a-4762-b277-e55e4a625a59" class=""><strong>App.tsx</strong>의 <strong>&lt;Route path=&quot;:id&quot; element={&lt;Article /&gt;} /&gt;</strong> 이 부분이 <strong>&lt;Outlet /&gt;</strong>컴포넌트 자리에 보여지게 되는 겁니다.</p><figure id="bac5435d-7ec4-4e10-a786-60d056420cea" class="image" style="text-align:left"><a href="Untitled%202.png"><img style="width:622px" src="Untitled%202.png"/></a></figure><p id="cc285acb-2a1b-4fc0-930f-f861b5d1b9dd" class="">
+</p><hr id="76808ef1-97fd-4806-a01f-0d3b8240668e"/><h1 id="04530e60-1d91-4bd3-8da3-c2f9f73f721a" class="">공통 레이아웃 컴포넌트</h1><p id="6b9cdc8b-948f-4710-bad0-f1b409ea422f" class="">중첩된 라우트와 Outlet은 페이지끼리 공통적으로 보여줘야 하는 레이아웃이 있을 경우에도 유용하게 사용할 수 있다. </p><p id="c6624a78-2870-4552-bba2-d4483a577250" class="">이 컴포넌트는 보통 애플리케이션의 헤더, 푸터 등과 같이 여러 페이지에서 반복되는 요소를 포함하게 된다.</p><h3 id="9e0ba747-5a1d-4091-8324-1938d1a09949" class="">Layout.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="7059a8b0-79d0-4bf5-afb6-07f808b0114d" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import { Outlet } from &quot;react-router-dom&quot;;
+
+function Layout() {
+  return (
+    &lt;div&gt;
+      &lt;header style={{ background: &quot;lightgray&quot;, padding: 16, fontSize: 24 }}&gt;
+        header
+      &lt;/header&gt;
+      &lt;main&gt;
+        &lt;Outlet /&gt;
+      &lt;/main&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default Layout;</code></pre><h3 id="62a6931c-0936-477f-b2cc-bc1ce514a4b5" class="">App.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="214b0dfd-5551-4f2f-802a-fd32c180ee20" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import { Route, Routes } from &quot;react-router-dom&quot;;
+import Layout from &quot;./Layout&quot;;
+import About from &quot;./pages/About&quot;;
+import Article from &quot;./pages/Article&quot;;
+import Articles from &quot;./pages/Articles&quot;;
+import Home from &quot;./pages/Home&quot;;
+import Profile from &quot;./pages/Profile&quot;;
+
+function App() {
+  return (
+    &lt;Routes&gt;
+      &lt;Route element={&lt;Layout /&gt;}&gt;
+        &lt;Route path=&quot;/&quot; element={&lt;Home /&gt;} /&gt;
+        &lt;Route path=&quot;/about&quot; element={&lt;About /&gt;} /&gt;
+        &lt;Route path=&quot;/profiles/:username&quot; element={&lt;Profile /&gt;} /&gt;
+      &lt;/Route&gt;
+      &lt;Route path=&quot;/articles&quot; element={&lt;Articles /&gt;}&gt;
+        &lt;Route path=&quot;:id&quot; element={&lt;Article /&gt;} /&gt;
+      &lt;/Route&gt;
+    &lt;/Routes&gt;
+  );
+}
+
+export default App;</code></pre><p id="c9cc66e4-c2b6-453b-a983-ada555e4cf15" class="">Layout컴포넌트를 임포트하고 <div class="indented"><p id="26e80be5-0a3d-4888-bcbb-2850fcb9649a" class=""><strong>&lt;Route element={&lt;Layout /&gt;}&gt;<br/>    &lt;Route path=&quot;/&quot; element={&lt;Home /&gt;} /&gt;<br/>    &lt;Route path=&quot;/about&quot; element={&lt;About /&gt;} /&gt;<br/>    &lt;Route path=&quot;/profiles/:username&quot; element={&lt;Profile /&gt;} /&gt;<br/> &lt;/Route&gt;<br/></strong><div class="indented"><p id="ff28f800-d2b2-4aeb-9b26-ede11e83110c" class="">Home, About, Profile컴포넌트 라우트를 Layout컴포넌트 라우트로 감싸주면 </p><p id="06278e85-1e97-4b66-9893-747e0c0a1bac" class="">Layout컴포넌트의 <div class="indented"><p id="6e3065ef-ba32-418c-a6ef-49006a55eec8" class=""><strong>&lt;main&gt;<br/>    &lt;Outlet /&gt;<br/>&lt;/main&gt;<br/></strong><div class="indented"><p id="b7f638d1-3381-4b21-8c27-54bee680bfd2" class="">main태그의 자식요소로 Home, About, Profile컴포넌트가 렌더링 된다.</p></div></p></div></p></div></p></div></p><figure id="55176e3f-27fe-4211-9b0b-9ff2cff01086" class="image"><a href="Untitled%203.png"><img style="width:546.9625244140625px" src="Untitled%203.png"/></a></figure><figure id="b3c04b3d-0ff6-490d-a19e-b7dc1ff09a18" class="image"><a href="Untitled%204.png"><img style="width:697px" src="Untitled%204.png"/></a></figure><hr id="8db122e7-8786-4887-9387-b284f266cdb0"/><h1 id="ca03996f-5d51-40a1-8b24-86e5e833a68c" class="">리액트 라우터 부가 기능</h1><h3 id="76d34959-7203-4255-bac8-5339151f1f83" class="">useNavigate</h3><p id="e9f3613c-c067-41c3-b905-83c5a64bb5c4" class="">useNavigate는 Link 컴포넌트를 사용하지 않고 다른 페이지로 이동해야하는 상황에 사용하는 Hook입니다. </p><p id="49066bf5-1c33-4999-8f62-b2ca9cf74203" class="">이 함수를 사용하면 스크립트 내에서 URL을 조작할 수 있다. </p><p id="ea12bd78-ccb0-488c-a38f-7f60cbcbab7d" class="">useNavigate는 현재 URL을 기반으로 새 URL로 이동하는 데 사용할 수 있는 navigate 함수를 반환한다. </p><p id="4aaff483-6b54-483b-abd8-0269cd9f1332" class="">이 함수를 사용하면 URL을 변경하거나, 새로운 URL로 이동할 수 있다.</p><h3 id="93830e8f-9568-4140-8ea1-2c3843f843b0" class="">Layout.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="44f08f1d-8bee-41f4-bdd4-cf8012e6bb9a" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import { Outlet, useNavigate } from &quot;react-router-dom&quot;;
+
+function Layout() {
+  const navigate = useNavigate();
+
+  function goBack() {
+    navigate(-1); //이전 페이지로 이동
+  }
+
+  function goArticles() {
+    navigate(&quot;/articles&quot;, { replace: true }); //articles 경로로 이동
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;header style={{ background: &quot;pink&quot;, padding: 16, fontSize: 24 }}&gt;
+        &lt;button onClick={goBack}&gt;뒤로가기&lt;/button&gt;
+        &lt;button onClick={goArticles}&gt;게시글 목록&lt;/button&gt;
+      &lt;/header&gt;
+      &lt;main&gt;
+        &lt;Outlet /&gt;
+      &lt;/main&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default Layout;</code></pre><p id="82aafea9-1dc0-45b0-9e8d-c16df393dee1" class="">
+</p><p id="38cbcb46-c39e-4a39-bc06-54fdd9083e7f" class=""><strong>navigate(-1);</strong><div class="indented"><p id="d6ed19ce-27a1-4033-8578-91fc9e3f25e1" class="">navigate함수를 사용할 때 파라미터가 숫자 타입이라면 앞으로 가거나 뒤로 갑니다.</p><p id="d075768d-72aa-41f2-9359-ae52f69a6e37" class="">예) -1은 뒤로 한 번, -2는 뒤로 두 번 가고, 반대로 1은 앞으로 한 번 이동합니다.</p><p id="bf484dd9-a590-4c9b-8c99-f9f5351fafe6" class="">
+</p></div></p><p id="e866d0ff-19e3-4f3f-97d1-c5a2572dcdbf" class=""><strong>navigate(&quot;/articles&quot;, { replace: true });</strong><div class="indented"><p id="16e917b9-3022-4a8b-a0aa-d2d36b39a287" class="">navigate함수의 두 번째 인자로 replace속성을 true로 설정하면 이동한 경로를 이전 기록에서 삭제한다는 의미가 됩니다.</p></div></p><figure id="f13e1d04-d4d7-49a0-9f80-b58bba40b380" class="image"><a href="%25EC%25BA%25A1%25EC%25B2%2598.jpg"><img style="width:546.9750366210938px" src="%25EC%25BA%25A1%25EC%25B2%2598.jpg"/></a></figure><p id="ba421e56-1c4d-45a2-b221-e14e271c9d45" class="">게시글 목록 버튼을 누르고 뒤로 가기 버튼을 누르면 이전 기록이 삭제되서 뒤로가기가 되지 않는다</p><figure id="51d30b74-6647-453c-affe-03038337f3bc" class="image"><a href="%25EC%25BA%25A1%25EC%25B2%2598%201.jpg"><img style="width:697px" src="%25EC%25BA%25A1%25EC%25B2%2598%201.jpg"/></a></figure><p id="a0fc4f10-50dc-4b92-b0b6-8e90498651ba" class="">
+</p><hr id="9da47072-8c06-486a-a364-5c6afd015e08"/><h1 id="5efd25bf-b8f5-40e1-a02b-92c82a09224c" class="">NavLink</h1><p id="bf48f734-2178-4324-aa9a-a6e42ada6d46" class="">NavLink 컴포넌트는 Link와 같이 클릭하면 경로를 변경할 수 있는 요소이다. </p><p id="ec1ce9fb-594d-4fbc-aa94-60d2e046aef1" class="">NavLink는 Link와 달리 현재 경로와 일치하는 경우 자동으로 스타일을 적용할 수 있다.</p><h3 id="53dc3a09-d79b-44e6-9b1b-6b80f2df1030" class="">pages/Articles.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="be3e2054-2520-4a20-aa27-8ae15187ab86" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import { NavLink, Outlet } from &quot;react-router-dom&quot;;
+
+function Articles() {
+  const activeStyle = {
+    color: &quot;green&quot;,
+    fontSize: 21,
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;Outlet /&gt;
+      &lt;ul&gt;
+        &lt;li&gt;
+          &lt;NavLink
+            to=&quot;/articles/1&quot;
+            style={({ isActive }) =&gt; (isActive ? activeStyle : undefined)}
+          &gt;
+            게시글 1
+          &lt;/NavLink&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+          &lt;NavLink
+            to=&quot;/articles/2&quot;
+            style={({ isActive }) =&gt; (isActive ? activeStyle : undefined)}
+          &gt;
+            게시글 2
+          &lt;/NavLink&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+          &lt;NavLink
+            to=&quot;/articles/3&quot;
+            style={({ isActive }) =&gt; (isActive ? activeStyle : undefined)}
+          &gt;
+            게시글 3
+          &lt;/NavLink&gt;
+        &lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default Articles;</code></pre><p id="06ba7b5b-0bce-4d8f-9593-6abcca7abb09" class=""><strong>style={({ isActive }) =&gt; (isActive ? activeStyle : undefined)</strong><div class="indented"><p id="970c7923-44d3-41f0-95b7-8a7f0886d83c" class="">이 컴포넌트의 style과 className은 { isActive: boolean }을 파라미터로 전달받는 함수 타입의 값을 전달 합니다.</p></div></p><figure id="490bfd28-5a76-4024-8f15-dbc8cd0d6494" class="image"><a href="Untitled%205.png"><img style="width:697px" src="Untitled%205.png"/></a></figure><p id="643a94f9-24ba-435c-8b9b-db2bc26bd1f0" class="">
+</p><p id="647f1462-7238-41c1-a77c-130b7ce07400" class="">이것을 리펙토링한다면, NavLink를 감싼 또 다른 컴포넌트를 만들어서 코드의 가독성을 향상시킬 수 있다</p><h3 id="fafc505c-2c6a-41b6-a7dd-e6768ed8f174" class="">pages/Articles.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="b3a2f2df-8c9f-44e6-921c-982c0607093f" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import { Outlet } from &quot;react-router-dom&quot;;
+import ArticleItem from &quot;./ArticleItem&quot;;
+
+function Articles() {
+  return (
+    &lt;div&gt;
+      &lt;Outlet /&gt;
+      &lt;ul&gt;
+        &lt;ArticleItem id={1} /&gt;
+        &lt;ArticleItem id={2} /&gt;
+        &lt;ArticleItem id={3} /&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default Articles;</code></pre><p id="001a107a-61fe-40e4-9bb1-9e520d3a2e19" class=""><strong>&lt;ArticleItem id={1} /&gt;<br/>&lt;ArticleItem id={2} /&gt;<br/>&lt;ArticleItem id={3} /&gt;<br/></strong><div class="indented"><p id="a311e878-725e-4628-b822-5446e3f0d230" class="">ArticleItem컴포넌트의 아이디값을 숫자로 전달</p><p id="f5e5acb9-65a1-4cfd-9caa-62bcfc7e3176" class="">
+</p></div></p><h3 id="f47a4510-94a1-40e9-8bec-aedf5130fffa" class="">pages/ArticleItem.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="7b661a2e-8c5f-4b1f-8e24-def79cce3145" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import { NavLink } from &quot;react-router-dom&quot;;
+
+function ArticleItem({ id }) {
+  const activeStyle = {
+    color: &quot;green&quot;,
+    fontSize: 21,
+  };
+
+  return (
+    &lt;li&gt;
+      &lt;NavLink
+        to={`/articles/${id}`}
+        style={({ isActive }) =&gt; (isActive ? activeStyle : undefined)}
+      &gt;
+        게시글 {id}
+      &lt;/NavLink&gt;
+    &lt;/li&gt;
+  );
+}
+
+export default ArticleItem;</code></pre><p id="165c07e9-7847-4c31-b55a-8e0b911bace0" class=""><strong>function ArticleItem({ id }) {</strong><div class="indented"><p id="5e133439-78bc-4d32-afca-b383b28c2000" class="">Articles컴포넌트에서 전달받은 아이디 값을 매개변수로 받고</p></div></p><p id="dbdfa3c1-0c69-4abc-b48e-8e5703b22d58" class="">
+</p><p id="3a7dc962-ac62-4f87-8c92-64ad505e1206" class=""><strong>&lt;NavLink<br/>    to={`/articles/${id}`}<br/>    style={({ isActive }) =&gt; (isActive ? activeStyle : undefined)}<br/>&gt;<br/>    게시글 {id}<br/>&lt;/NavLink&gt;<br/></strong><div class="indented"><p id="2359bae1-6f1e-4e42-94dc-5400597464f7" class="">매개변수 id를 파라미터URL 경로 값으로 설정하고 NavLink의 문자로 출력</p></div></p><p id="bd8d3ea2-19c1-43dd-9fc9-5741e4134eec" class="">
+</p><hr id="84264da9-6487-4b59-bbd1-6c3c6bae1213"/><h1 id="07905e07-edd4-437d-beb4-fee68c639264" class="">NotFound 페이지 만들기</h1><p id="970f0371-3949-4cf5-bcb9-6a2e8cf58538" class="">NotFound 페이지는 사용자가 잘못된 경로로 접근했을 때, 존재하지 않는 페이지에 접근했을 때 보여주는 페이지를 말한다.한번 구현해보자.</p><h3 id="18b96fa2-5335-43de-aa90-6ea3a344a67e" class="">pages/NotFound.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="3048c0bb-1eaf-4ada-9dcd-d5572f057928" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">function NotFound() {
+  return (
+    &lt;div
+      style={{
+        display: &quot;flex&quot;,
+        alignItems: &quot;center&quot;,
+        justifyContent: &quot;center&quot;,
+        fontSize: 64,
+        position: &quot;absolute&quot;,
+        width: &quot;100%&quot;,
+        height: &quot;100%&quot;,
+      }}
+    &gt;
+      404
+    &lt;/div&gt;
+  );
+}
+
+export default NotFound;</code></pre><h3 id="2d70aa3d-17fe-489f-99fa-9d342ad5d3cf" class="">App.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="54fd6ed9-61fa-460c-9bba-ce63ac3c99fe" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import { Route, Routes } from &quot;react-router-dom&quot;;
+import Layout from &quot;./Layout&quot;;
+import About from &quot;./pages/About&quot;;
+import Article from &quot;./pages/Article&quot;;
+import Articles from &quot;./pages/Articles&quot;;
+import Home from &quot;./pages/Home&quot;;
+import NotFound from &quot;./pages/NotFound&quot;;
+import Profile from &quot;./pages/Profile&quot;;
+
+function App() {
+  return (
+		&lt;Routes&gt;
+			&lt;Route element={&lt;Layout /&gt;}&gt;
+				&lt;Route path=&quot;/&quot; element={&lt;Home /&gt;} /&gt;
+				&lt;Route path=&quot;/about&quot; element={&lt;About /&gt;} /&gt;
+				&lt;Route path=&quot;/profiles/:username&quot; element={&lt;Profile /&gt;} /&gt;
+			&lt;/Route&gt;
+			&lt;Route path=&quot;/articles&quot; element={&lt;Articles /&gt;}&gt;
+				&lt;Route path=&quot;:id&quot; element={&lt;Article /&gt;} /&gt;
+			&lt;/Route&gt;
+			&lt;Route path=&quot;*&quot; element={&lt;NotFound /&gt;} /&gt;
+		&lt;/Routes&gt;
+  );
+}
+
+export default App;</code></pre><p id="6766f1ff-d48e-419a-b563-867644810bca" class=""><strong>&lt;Route path=&quot;*&quot; element={&lt;NotFound /&gt;} /&gt;</strong><div class="indented"><p id="1187a6c6-adc1-4b07-940e-f7c6adeb8bd0" class="">여기서 *는 wildcard 문자로 아무 텍스트나 매칭한다는 뜻입니다</p><p id="f3d97f03-d1c8-4618-adf2-a2279e2de14e" class="">이 라우트 엘리먼트의 상단에 위치하는 라우트들의 규칙을 모두 확인하고, </p><p id="1ccd61d1-fe58-4090-9cf1-fe47f3c8d93b" class="">일치하는 라우트가 없다면 이 라우트가 화면에 나타나게 됩니다.</p><p id="46a075a0-926f-4487-8ddc-6b5251c78586" class="">
+</p></div></p><p id="96268b4b-63e2-4bd8-a34e-b028633168c7" class=""> localhost 주소 슬래시(/) 뒤에 아무런 문자를 입력해서 접속해보면 다음과 같은 화면이 나온다.</p><figure id="460e3697-73f4-4394-a486-dec18f98cbe7" class="image"><a href="Untitled%206.png"><img style="width:546.9625244140625px" src="Untitled%206.png"/></a></figure><p id="be40fb98-a3ea-45ae-8693-8d0158626a8f" class="">
+</p><hr id="1bdbc9e4-6aba-4a7b-9c48-80d946748162"/><h1 id="d83c5617-2193-4f57-a736-95feabf3e974" class="">Navigate 컴포넌트</h1><p id="090a5f32-27a4-4a92-9e2d-60b6f667d9c3" class="">Navigate 컴포넌트는 브라우저의 주소를 변경하는데 사용된다. </p><p id="bfa50abf-0fea-48ee-abda-71a22cdfb498" class="">useNavigate와 유사한 역할을 수행하지만, Navigate 컴포넌트는 일반적으로 조건부로 페이지 전환을 할 때 사용된다. </p><p id="4f9e6090-166d-4983-89d0-794da1ddb7f1" class="">예를 들어 로그인하지 않은 사용자가 허용되지 않은 페이지에 엑세스하려 시도하는 경우, 조건부로 로그인 페이지로 전환하는 데 사용할 수 있다.</p><p id="a899bbbf-014b-4c45-b77c-4a8274a694ec" class="">Navigate 컴포넌트는 to prop을 사용해 전환할 주소를 지정하며, 선택적으로 replace prop을 사용해 현재 페이지의 브라우저 히스토리를 대체할지 여부를 지정할 수 있다.</p><p id="fdd587e7-7d32-414d-afe4-3375141e8003" class="">
+</p><h3 id="cee73f97-0a76-41fd-9ae0-49b4ec2fb6ba" class="">pages/Login.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="d5f5ec54-f7a9-471a-bf0e-db4c9b8cca4a" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">function Login() {
+  return &lt;div&gt;로그인 페이지&lt;/div&gt;;
+}
+
+export default Login;</code></pre><p id="bc1ade80-8ea7-42ff-9fee-8051ed2a5c26" class="">
+</p><h3 id="109d28e8-0f0e-48d6-abca-c06fccd67feb" class="">pages/MyPage.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="c40af02c-d88d-4264-9705-e9c542869365" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import { Navigate } from &quot;react-router-dom&quot;;
+
+function MyPage() {
+  const isLoggedIn = false;
+
+  if (!isLoggedIn) {
+    return &lt;Navigate to=&quot;/login&quot; replace={true} /&gt;;
+  }
+
+  return &lt;div&gt;마이 페이지&lt;/div&gt;;
+}
+
+export default MyPage;</code></pre><p id="5c406f58-a843-4db0-9c98-6d8e4b4911f5" class=""><strong>const isLoggedIn = false;</strong><div class="indented"><p id="a90785a7-f334-459b-b66e-bf8b26715ac9" class="">isLoggedIn은 현재 false라는 고정값을 가지고 있지만 이 값이 로그인 상태에 따라 true 또는 false를 가리킨다고 가정해 봅시다.</p></div></p><p id="e0d2ff24-6ed8-4d14-8d4e-d7b317467d08" class=""><strong>if (!isLoggedIn) {<br/>    return &lt;Navigate to=&quot;/login&quot; replace={true} /&gt;;<br/>}<br/></strong><div class="indented"><p id="f56e1b10-3c55-4582-b5bf-a3e6cc2f57d4" class="">isLoggendIn이 false면 Navigate컴포넌트를 통해 /login 경로로 이동하게 됩니다.</p><p id="9dfe37b9-656f-442a-bcfe-d7b19d38753c" class="">여기서 replace를 true로 설정하면 페이지를 이동할 때 현재 페이지를 기록에 남기지 않기 때문에 이동 후 뒤로가기를 눌러도 MyPage로 돌아가는게 아니라 처음 페이지로 돌아가게 됩니다.</p></div></p><h3 id="72d6c4a6-7c82-4762-a8a5-a66fe791beb3" class="">App.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="7863c6fb-ccc6-4a05-906a-b068b8456751" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import { Route, Routes } from &quot;react-router-dom&quot;;
+import Layout from &quot;./Layout&quot;;
+import About from &quot;./pages/About&quot;;
+import Article from &quot;./pages/Article&quot;;
+import Articles from &quot;./pages/Articles&quot;;
+import Home from &quot;./pages/Home&quot;;
+import Login from &quot;./pages/Login&quot;;
+import MyPage from &quot;./pages/MyPage&quot;;
+import NotFound from &quot;./pages/NotFound&quot;;
+import Profile from &quot;./pages/Profile&quot;;
+
+function App() {
+  return (
+		&lt;Routes&gt;
+			&lt;Route element={&lt;Layout /&gt;}&gt;
+				&lt;Route path=&quot;/&quot; element={&lt;Home /&gt;} /&gt;
+				&lt;Route path=&quot;/about&quot; element={&lt;About /&gt;} /&gt;
+				&lt;Route path=&quot;/profiles/:username&quot; element={&lt;Profile /&gt;} /&gt;
+			&lt;/Route&gt;
+			&lt;Route path=&quot;/articles&quot; element={&lt;Articles /&gt;}&gt;
+				&lt;Route path=&quot;:id&quot; element={&lt;Article /&gt;} /&gt;
+			&lt;/Route&gt;
+			&lt;Route path=&quot;/login&quot; element={&lt;Login /&gt;} /&gt;
+      &lt;Route path=&quot;/mypage&quot; element={&lt;MyPage /&gt;} /&gt;
+			&lt;Route path=&quot;*&quot; element={&lt;NotFound /&gt;} /&gt;
+		&lt;/Routes&gt;
+  );
+}
+
+export default App;</code></pre><p id="e1aa1a69-dd0d-4532-881f-014d0a4ff2d8" class="">
+</p><p id="c53863b3-956b-4e72-9a16-d8cedb83656f" class="">주소 뒤에 /mypage를 입력해주면 자동으로 로그인 페이지로 넘어가게 된다.</p><figure id="6d98fc6b-8f43-41a4-a98d-4ddce05f4dd2" class="image"><a href="Untitled%207.png"><img style="width:546.9249877929688px" src="Untitled%207.png"/></a></figure><figure id="378052f0-0e86-4d4a-bead-ab2656c1ccdf" class="image"><a href="%25EC%25BA%25A1%25EC%25B2%2598%202.jpg"><img style="width:697px" src="%25EC%25BA%25A1%25EC%25B2%2598%202.jpg"/></a></figure><p id="69738fc9-ee44-4df6-9567-0d67bb76c8ac" class="">뒤로가기 버튼을 누르면 처음 페이지로 돌아감</p><figure id="89fafb08-cc2b-41ee-b51c-8d919cc37eb9" class="image"><a href="Untitled%208.png"><img style="width:546.9874877929688px" src="Untitled%208.png"/></a></figure></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>

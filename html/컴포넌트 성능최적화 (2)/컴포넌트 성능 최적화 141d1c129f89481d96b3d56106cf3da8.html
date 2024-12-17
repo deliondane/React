@@ -1,0 +1,949 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>컴포넌트 성능 최적화</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-default_background {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(0, 0, 0, 0.06); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="141d1c12-9f89-481d-96b3-d56106cf3da8" class="page sans"><header><h1 class="page-title">컴포넌트 성능 최적화</h1><p class="page-description"></p></header><div class="page-body"><h2 id="8abc7258-f303-4133-805c-d7b5637aaf00" class="">많은 데이터 렌더링하기</h2><p id="07111899-3251-4b29-8dc8-44ff46e59bde" class="">실제로 랙을 경험할 수 있도록 많은 데이터를 렌더링해 보겠습니다.</p><h3 id="85c24154-0091-46b1-bb14-bcdd69ac673b" class="">App.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="624cd824-b935-4da1-ad58-eeef06d27137" class="code"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">import React, { useRef, useState, useCallback } from &#x27;react&#x27;;
+import TodoContainer from &quot;./components/TodoContainer&quot;;
+import TodoInput from &quot;./components/TodoInput&quot;;
+import TodoList from &quot;./components/TodoList&quot;;
+
+function createBulkTodos() {
+  const array = [];
+  for (let i = 1; i &lt;= 2500; i++) {
+    array.push({
+      id: i,
+      text: `할 일 ${i}`,
+      checked: false,
+    });
+  }
+  return array;
+}
+
+const App = () =&gt; {
+  const [todos, setTodos] = useState(createBulkTodos);
+
+  // 고유 값으로 사용 될 id
+  // ref 를 사용하여 변수 담기
+  const nextId = useRef(2501);
+
+  const onInput = useCallback(
+    (text) =&gt; {
+      const todo = {
+        id: nextId.current,
+        text,
+        checked: false,
+      };
+      setTodos(todos.concat(todo));
+      nextId.current += 1;
+    },
+    [todos]
+  );
+  
+  const onRemove = useCallback(
+    id =&gt; { 
+      setTodos(todos.filter(todo =&gt; todo.id !== id))
+    },
+    [todos]
+  );
+  
+  const onToggle = useCallback(
+    id =&gt; {
+      setTodos(
+        todos.map(todo =&gt; 
+          todo.id === id ? {...todo, checked : !todo.checked} : todo
+        )
+      )
+    },
+    [todos]
+  )
+
+  return (
+		&lt;TodoContainer&gt;
+			&lt;TodoInput onInput={onInput} /&gt;
+			&lt;TodoList todos={todos} onRemove={onRemove} onToggle={onToggle} /&gt;
+		&lt;/TodoContainer&gt;
+  );
+};
+
+export default App;
+
+</code></pre><p id="95819ab2-0aeb-459a-b99b-18fc687793e8" class="">
+</p><p id="4e819462-0cd7-48f6-86fd-acc83cfbf17e" class="">데이터를 하나하나 직접 입력할 수는 없으므로 </p><p id="98d07878-ab0f-4cf1-b833-a4b65a4dc260" class="">createBulkTodos라는 함수를 만들어서 데이터 2500개를 자동으로 생성했습니다.</p><figure id="add5833c-dcf7-48e4-a8a4-5901a9dfccfb" class="image" style="text-align:left"><a href="Untitled.png"><img style="width:532.98291015625px" src="Untitled.png"/></a></figure><p id="673d6c3f-598a-469e-8eaf-973b3259fc46" class="">
+</p><p id="c870f600-ea02-4093-ba4e-0fa1d1a4ea53" class="">데이터가 렌더링 되었다면 항목 하나를 체크해 보세요, </p><p id="9f0538e2-f8cd-4d25-b23d-b1712638d9b3" class="">이전보다 느려진 것이 느껴집니다.</p><p id="6aac295c-5bbe-424c-a09e-07167a082c5b" class="">
+</p><hr id="94f294e7-7aa5-4878-9e28-1bbaa4c1d6c4"/><h2 id="de224bae-add8-498a-a283-94df8b5e99a3" class="">크롬 개발자 도구를 통한 성능 모니터링</h2><p id="00af6fa5-bdc7-46d5-a772-990466b78b54" class="">
+</p><figure id="79565af3-fd55-4666-b30c-ec728b12e1ba" class="image" style="text-align:left"><a href="%25EC%25BA%25A1%25EC%25B2%2598.png"><img style="width:625px" src="%25EC%25BA%25A1%25EC%25B2%2598.png"/></a></figure><p id="16c0d56a-5364-43fc-8827-eeb0323fdf3d" class="">브라우저 개발자 도구의 profiler 탭을 열고</p><p id="032f08da-03bc-41b3-aab5-55034947eb9f" class="">녹화 버튼을 한번 누르고 할일 1을 체크하고 다시 녹화버튼을 누르면 성능분석 결과가 나타납니다.</p><p id="8e142391-cf42-4b81-a902-a55d325b3b8e" class="">
+</p><p id="5e244de8-ab52-4ff2-a258-3b4c0c654b27" class="">Durations의 Render는 리렌더링에 소요된 시간을 의미합니다.</p><p id="882dc8ee-a81a-4f0d-8bed-50147bbf83fc" class="">(1ms는 0.001초입니다.)</p><p id="e2be2be8-b6a0-4146-a01b-9c31c6b62f9f" class="">
+</p><hr id="025e81a6-19e2-48a5-b81f-599ebe497a66"/><h2 id="91becd2a-3da5-4dbe-82db-a84b164d618a" class="">느려지는 원인 분석</h2><p id="2ee88ac4-8bf0-4319-a1ec-f6d630ef9978" class="">컴포넌트는 다음과 같은 상황에서 리렌더링이 발생합니다.</p><ol type="1" id="0c6a74ba-c4e4-4da3-9380-e3ad14261000" class="numbered-list" start="1"><li>자신이 전달받은 props가 변경될 때</li></ol><ol type="1" id="c9fc7be0-1f79-4c08-a51a-b41563902f8b" class="numbered-list" start="2"><li>자신의 state가 바뀔 때</li></ol><ol type="1" id="b175cabd-2231-401e-8caf-2bccfeea6f24" class="numbered-list" start="3"><li>부모 컴포넌트가 리렌더링될 때</li></ol><ol type="1" id="078db858-7d89-4d27-bd73-c6d8378fb5ef" class="numbered-list" start="4"><li>forceUpdate 함수가 실행될 때</li></ol><p id="664c5e0f-ac22-4afd-841b-6902907863c9" class="">
+</p><p id="ea40f53f-c7eb-45de-a1b1-5f93423984e2" class="">상황을 분석해 보면, <code>할 일 1</code> 항목을 체크할 경우 App 컴포넌트의 state가 변경되면서 App 컴포넌트가 리렌더링 됩니다.</p><p id="3e0dbdd1-cf50-422a-811f-3018a861e814" class="">부모 컴포넌트가 리렌더링되었으므로 TodoList 컴포넌트도 리렌더링되고, 그 안에 무수한 컴포넌트들도 리렌더링 됩니다.</p><p id="3b76146f-3bdd-4232-b5b1-a5863be3252e" class="">
+</p><p id="157ec298-dddd-4214-b7ca-086bcc1c036f" class=""><code>할 일 1</code>부터  <code>할 일 2500</code> 까지는 리렌더링을 안 해도 되는 상황인데 모두 리렌더링되고 있으므로 느린 것입니다.</p><p id="9255f676-1c46-4b71-b6ae-150c92fbca24" class="">
+</p><p id="0e3db2d0-5338-42de-ac74-5c5ef2169353" class="">이럴 때는 컴포넌트 리렌더링 성능을 최적화해 주는 작업을 해 주어야 합니다.</p><p id="97da6c94-d010-4ab3-a3fa-a5ba9f661a8f" class="">
+</p><hr id="f5440742-58b7-458d-995e-c8fe76accad4"/><h2 id="0fa37107-859c-488c-abe1-bbbb943e817a" class="">React.memo 사용 </h2><h3 id="7a7b8c48-9b56-4d9e-9734-3ab0214ed17d" class="">TodoListItem.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="19eda644-534b-4360-8f2f-e45115f8ef9f" class="code"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">import React from &#x27;react&#x27;;
+
+import {
+    MdCheckBoxOutlineBlank,
+    MdCheckBox,
+    MdRemoveCircleOutline
+  } from &#x27;react-icons/md&#x27;;
+  import cn from &#x27;classnames&#x27;;
+  import &#x27;./TodoListItem.scss&#x27;;
+  
+  const TodoListItem = ({ todo, onRemove, onToggle }) =&gt; {
+    const { id, text, checked } = todo;
+  
+    return (
+      &lt;div className=&quot;TodoListItem&quot;&gt;
+        &lt;div className={cn(&#x27;checkbox&#x27;, { checked })} onClick={() =&gt; onToggle(id)}&gt;
+          {checked ? &lt;MdCheckBox /&gt; : &lt;MdCheckBoxOutlineBlank /&gt;}
+          &lt;div className=&quot;text&quot;&gt;{text}&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div className=&quot;remove&quot; onClick={() =&gt; onRemove(id)}&gt;
+          &lt;MdRemoveCircleOutline /&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    );
+  };
+  
+  export default React.memo(TodoListItem);</code></pre><p id="c894752a-2dd9-4ccf-bae2-de4b25396d44" class="">이제 TodoListItem 컴포넌트는 todo, onRemove, onToggle이 바뀌지 않으면 리렌더링을 하지 않습니다.</p><p id="f315d337-6f48-4aa5-9d77-e9d29cd1e2a0" class="">
+</p><hr id="f4ac0d4b-cf0a-42ab-b886-7636721150a1"/><h2 id="5d9125dc-ac53-4800-81a3-09525860b2e9" class="">onToggle, onRemove 함수가 바뀌지 않게 하기</h2><p id="dd52c7a0-3d61-4f74-8ab5-928764216dab" class="">현재 프로젝트에서는 todos 배열이 업데이트되면 onRemove와 onToggle 함수도 새롭게 바뀝니다.</p><p id="0a625c75-3c20-4243-b4f1-89c5c918399d" class="">
+</p><p id="5158625a-c172-4f0e-8b75-0c9f89e8f9de" class="">onRemove와 onToggle 함수는 배열 상태를 업데이트하는 과정에서 </p><p id="ee88b316-6503-42e9-b8be-e5d6cdf88717" class="">최신 상태의 todos를 참조하기 때문에 todos배열이 바뀔 때마다 함수가 새로 만들어 집니다.</p><p id="4e69b379-4694-4a0f-b833-54a9544d8fdc" class="">
+</p><h3 id="c7d19258-6b93-4739-af21-4c75b07f94ee" class="">함수가 계속 만들어지는 상황을 방지하는 방법</h3><ul id="b96128b6-5015-49b7-a639-a25174e440af" class="bulleted-list"><li style="list-style-type:disc">useState의 함수형 업데이트 기능을 사용</li></ul><ul id="71f9765b-b897-4fb6-8281-13a4f976c718" class="bulleted-list"><li style="list-style-type:disc">useReducer를 사용</li></ul><p id="59aa737f-706a-4035-bbfb-0e3bff820cad" class="">
+</p><h3 id="72e97729-d29c-4585-b611-7d70b0e5d487" class="">useState의 함수형 업데이트</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="36a47ca4-eee5-4e37-9020-78da911b15cc" class="code"><code class="language-JavaScript">const [number, setNumber] = useState(0);
+
+// prevNumbers는 현재 number 값을 가리킵니다.
+
+const onIncrese = useCallback(
+	() =&gt; setNumber(prevNumber =&gt; prevNumber + 1),
+	[],
+)</code></pre><p id="978ba9c1-7e3a-4abd-a234-6431bdf3aa6c" class="">setNumber(number + 1)을 하는 것이 아니라, </p><p id="e8b425fb-d69c-4233-b350-7da3d41ca624" class="">어떻게 업데이트할지 정의해 주는 업데이트 함수를 넣어 줍니다.</p><p id="1b8939c1-b580-4bf2-8011-874a8dc3f26c" class="">그러면 useCallback을 사용할 때 두 번째 파라미터로 넣는 배열에 number를 넣지 않아도 됩니다.</p><p id="a1b2b2ee-28a4-496c-b6d3-7f35d9efa93a" class="">
+</p><p id="06311ec6-ef58-4a75-8eb8-ece8781dba28" class="">
+</p><h3 id="e631292b-b6ac-4de0-8231-78c9bc60258e" class="">App.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="6d0309cf-bac3-462a-8e8b-4440495c7ca3" class="code"><code class="language-JavaScript">import React, { useRef, useState, useCallback } from &#x27;react&#x27;;
+import TodoContainer from &quot;./components/TodoContainer&quot;;
+import TodoInput from &quot;./components/TodoInput&quot;;
+import TodoList from &quot;./components/TodoList&quot;;
+
+function createBulkTodos() {
+  const array = [];
+  for (let i = 1; i &lt;= 2500; i++) {
+    array.push({
+      id: i,
+      text: `할 일 ${i}`,
+      checked: false,
+    });
+  }
+  return array;
+}
+
+const App = () =&gt; {
+  const [todos, setTodos] = useState(createBulkTodos);
+
+  const nextId = useRef(2501);
+
+  const onInput = useCallback(text =&gt; {
+    const todo = {
+      id: nextId.current,
+      text,
+      checked: false,
+    };
+    setTodos(todos =&gt; todos.concat(todo));
+    nextId.current += 1; 
+  }, []);
+
+  const onRemove = useCallback(id =&gt; {
+    setTodos(todos =&gt; todos.filter(todo =&gt; todo.id !== id));
+  }, []);
+
+  const onToggle = useCallback(id =&gt; {
+    setTodos(todos =&gt;
+      todos.map(todo =&gt;
+        todo.id === id ? { ...todo, checked: !todo.checked } : todo,
+      ),
+    );
+  }, []);
+
+  return (
+		&lt;TodoContainer&gt;
+			&lt;TodoInput onInput={onInput} /&gt;
+			&lt;TodoList todos={todos} onRemove={onRemove} onToggle={onToggle} /&gt;
+		&lt;/TodoContainer&gt;
+  );
+};
+
+export default App;
+
+</code></pre><p id="6b9ae303-ba2b-4f9a-aad2-64243adda98e" class="">
+</p><h2 id="55bac96d-433c-46ac-8383-caf7a28e1c8c" class="">성능 측정</h2><figure id="ef464b3b-293e-49ab-9d4d-ef2e2dfd021d" class="image" style="text-align:left"><a href="%25EC%25BA%25A1%25EC%25B2%2598%201.png"><img style="width:621px" src="%25EC%25BA%25A1%25EC%25B2%2598%201.png"/></a></figure><p id="991012cd-a6c0-4c48-8bdd-e1ab6a9f689f" class="">회색 빗금이 그어져 있는 박스는 React.memo를 통해 리렌더링되지 않은 컴포넌트를 나타냅니다.</p><p id="5fd804ca-8b17-46b8-a520-f6de40ab6f2d" class="">
+</p><hr id="b46f9ff8-e99f-4d13-974b-ff10209d9779"/><h2 id="9b0727f8-3a67-4e30-a12f-166406e67731" class="">useReducer 사용하기</h2><p id="e01390d5-7777-42ae-aead-b5d0f93bacab" class="">useState의 함수형 업데이트를 사용하는 대신, useReducer를 사용해도 onToggle과 onRemove가 계속 새로워지는 문제를 해결할 수 있다.</p><p id="ae435494-c77e-4494-96cf-a888ecb9082f" class="">
+</p><h3 id="ea53ff21-1197-4e4b-beb4-19287192488a" class="">App.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="a50729dc-4c5b-440f-b389-1591256652df" class="code"><code class="language-JavaScript">import React, { useReducer, useRef, useCallback } from &#x27;react&#x27;;
+import TodoContainer from &quot;./components/TodoContainer&quot;;
+import TodoInput from &quot;./components/TodoInput&quot;;
+import TodoList from &quot;./components/TodoList&quot;;
+
+function createBulkTodos() {
+  const array = [];
+  for (let i = 1; i &lt;= 2500; i++) {
+    array.push({
+      id: i,
+      text: `할 일 ${i}`,
+      checked: false,
+    });
+  }
+  return array;
+}
+
+function todoReducer(todos, action) {
+  switch (action.type) {
+    case &#x27;INSERT&#x27;: // 새로 추가
+      // { type: &#x27;INSERT&#x27;, todo: { id: 1, text: &#x27;todo&#x27;, checked: false } }
+      return todos.concat(action.todo);
+    case &#x27;REMOVE&#x27;: // 제거
+      // { type: &#x27;REMOVE&#x27;, id: 1 }
+      return todos.filter(todo =&gt; todo.id !== action.id);
+    case &#x27;TOGGLE&#x27;: // 토글
+      // { type: &#x27;REMOVE&#x27;, id: 1 }
+      return todos.map(todo =&gt;
+        todo.id === action.id ? { ...todo, checked: !todo.checked } : todo,
+      );
+    default:
+      return todos;
+  }
+}
+
+const App = () =&gt; {
+  const [todos, dispatch] = useReducer(todoReducer, undefined, createBulkTodos);
+
+  const nextId = useRef(2501);
+
+  const onInput = useCallback(text =&gt; {
+    const todo = {
+      id: nextId.current,
+      text,
+      checked: false,
+    };
+    dispatch({ type: &#x27;INSERT&#x27;, todo });
+    nextId.current += 1; 
+  }, []);
+
+  const onRemove = useCallback(id =&gt; {
+    dispatch({ type: &#x27;REMOVE&#x27;, id });
+  }, []);
+
+  const onToggle = useCallback(id =&gt; {
+    dispatch({ type: &#x27;TOGGLE&#x27;, id });
+  }, []);
+
+  return (
+		&lt;TodoContainer&gt;
+			&lt;TodoInput onInput={onInput} /&gt;
+			&lt;TodoList todos={todos} onRemove={onRemove} onToggle={onToggle} /&gt;
+		&lt;/TodoContainer&gt;
+  );
+};
+
+export default App;
+
+</code></pre><p id="56a493ca-e2e6-486a-972c-cfc55a18466e" class="">
+</p><p id="60eff4ac-9f37-4e11-b1e6-33ce4b0b6a48" class=""><mark class="highlight-yellow_background"><strong>const [todos, dispatch] = useReducer(todoReducer, </strong></mark><mark class="highlight-red_background"><strong>undefined</strong></mark><mark class="highlight-yellow_background"><strong>, createBulkTodos);</strong></mark><div class="indented"><p id="5a5db29d-9677-435b-af75-d04018af1c4e" class="">useReducer를 사용할 때는 원래 두 번째 파라미터에 초기 상태를 넣어 주어야 합니다.</p><p id="ca0db19d-97a5-48d6-8dc0-4b54e9de632b" class="">지금은 undefined를 넣고, 세 번째 파라미터에 초기 상태를 만들어 주는 함수인 createBulkTodos를 넣어 주었는데, 이러면 컴포넌트가 맨 처음 렌더링될 때만 createBulkTodos 함수가 호출됩니다</p><p id="e73ea28c-dd33-4ea2-aabf-1ee36cedca8a" class="">
+</p><p id="5fcd9b42-52f9-40c0-ba15-367ece7e3055" class="">useReducer를 사용하면 기존 코드를 많이 고쳐야 한다는 단점이 있지만, 상태를 업데이트하는 로직을 모아서 컴포넌트 바깥에 둘 수 있다는 장점이 있습니다.</p><p id="728f608b-2d41-460a-9e39-43be766323a5" class="">
+</p><p id="8e8183d7-8ed7-4285-a7b7-bbb3cf425989" class="">성능상으로는 useReducer와 useState함수 업데이트 방법이 비슷하기 때문에 취향에 따라 결정하면 됩니다.</p><p id="134244c2-4e2c-4c38-b5ab-3f08eaaac231" class="">
+</p></div></p><hr id="7839f3e7-121e-43d5-8cb2-fef5b344b937"/><h1 id="7dd994a9-e101-41e3-b725-f477fdd14352" class="">TodoList 컴포넌트 최적화</h1><h3 id="482911b9-4db5-4862-a39d-274fcf69cc7a" class="">TodoList.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="277abb70-a2b3-4c13-8886-daba1db33de7" class="code"><code class="language-JavaScript">import React from &#x27;react&#x27;;
+import TodoListItem from &#x27;./TodoListItem&#x27;;
+import &#x27;./TodoList.scss&#x27;;
+
+const TodoList = ({ todos, onRemove, onToggle }) =&gt; {
+  return (
+    &lt;div className=&quot;TodoList&quot;&gt;
+      {todos.map(todo =&gt; (
+        &lt;TodoListItem
+          todo={todo}
+          key={todo.id}
+          onRemove={onRemove}
+          onToggle={onToggle}
+        /&gt;
+      ))}
+    &lt;/div&gt;
+  );
+};
+
+export default React.memo(TodoList);</code></pre><p id="c4c39e76-bb19-4a23-b979-4d59be067371" class="">위 최적화 코드는 현재 프로젝트 성능에 전혀 영향을 주지 않습니다.</p><p id="cffdee35-79be-4ed2-8671-555328488413" class="">TodoList 컴포넌트의 부모 컴포넌트인 App 컴포넌트가 리렌더링되는 유일한 이유가 todos 배열이 업데이트될 때이기 때문입니다.</p><p id="b5b2c744-0089-43c0-8448-8daac593d73f" class="">즉, 지금 TodoList 컴포넌트는 불필요한 리렌더링이 발생하지 않습니다.</p><p id="fc285595-dbce-41ea-a750-91a958857384" class="">
+</p><p id="c76fd692-f099-4b22-b825-1aa2684cfaa3" class="">하지만 App 컴포넌트에 다른 state가 추가되어 해당 값들이 업데이트될 때는 TodoList 컴포넌트가 불필요한 리렌더링을 할 수도 있기 때문에 미리 최적화해 줍니다.</p><p id="71ecd53e-9e14-453f-b200-b6f8e83f17a4" class="">
+</p><p id="75197cca-7e7c-4e35-9163-c26e4cecca4b" class="">
+</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>

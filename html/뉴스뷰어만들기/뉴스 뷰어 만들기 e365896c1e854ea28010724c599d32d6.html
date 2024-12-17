@@ -1,0 +1,1173 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>뉴스 뷰어 만들기</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-default_background {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(0, 0, 0, 0.06); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="e365896c-1e85-4ea2-8010-724c599d32d6" class="page sans"><header><h1 class="page-title">뉴스 뷰어 만들기</h1><p class="page-description"></p></header><div class="page-body"><h1 id="e45385bd-464e-48fa-9daf-7bbd73a60db6" class="">axios로 API 호출하기</h1><h1 id="11741954-1278-4156-b97b-7bf3850735e7" class="">axios</h1><p id="d09b393f-730b-43f8-8a0b-33ff6444e1e2" class="">백엔드 API를 호출하기 위한 라이브러리</p><p id="501ba35f-4c29-46f6-8c91-21cd32f4c1c3" class="">
+</p><h3 id="57328cab-9033-4c7d-a397-5b57a550b04a" class="">설치</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="8af16b92-45bd-4a3b-aaa9-55e41f78d862" class="code"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">npm install axios</code></pre><h3 id="ea6244a9-e022-4eb3-99fb-cb776b9b1b23" class="">import</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="c67c6da2-03d2-4326-a663-b8ba2f967683" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import axios from &#x27;axios&#x27;</code></pre><h3 id="422d5b75-cad6-4161-89ef-ba8f47d1dcc5" class="">get 요청 구현 #1</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="84afbb45-3d84-4cd2-a7dd-6fdc69841c73" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">  axios.get(&#x27;/서버 URL&#x27;)
+   .then(response =&gt; {
+	    data = response.data;
+    })</code></pre><p id="a1a92121-76a6-40fd-b6b1-d31496af7799" class="">promise를 활용한 구현 방법</p><p id="d2d561fd-c93c-4e34-af97-1a4f9125233f" class="">
+</p><p id="4df66afa-c8e8-4c37-9296-07d41a4a9bf1" class="">javascript로 구현한 백엔드 호출 요청은 비동기(asynchronouse)로 실행된다.<div class="indented"><ol type="1" id="47b84bfb-2af8-43db-831e-5cd38ebe505e" class="numbered-list" start="1"><li>axios.get 메소드는 서버 URL을 GET 요청한다.<br/>get 메소드는 서버의 응답을 기다리지 않고 즉시 리턴한다. (몇 nano 초)<br/></li></ol><ol type="1" id="7a56e4c5-5cc5-496d-8947-a7b14d4895d4" class="numbered-list" start="2"><li>then 메소드가 호출된다. 이 메소드는 콜백 함수를 호출하지 않고, 등록 하기만 한다.<br/>겨우 콜백 함수를 등록하는 간단한 일만 하기 때문에, then 메소드도 즉시 리턴된다. (몇 nano 초)<br/></li></ol><ol type="1" id="abdb5595-064f-4f9c-8eb0-3738eb27bede" class="numbered-list" start="3"><li>한참 후에 서버의 응답(response)이 웹브라우저에 도착하면, (몇 mili 초)<br/>아까 then 메소드가 등록한 콜백 함수가 호출되고,<br/>도착한 서버의 응답(response)가 이 콜백 함수의 파라미터로 전달된다.<br/></li></ol><p id="6888cae3-8b10-4a00-85bf-5885691caf4f" class="">
+</p></div></p><h3 id="4e616485-f89d-47b5-baab-34e3c9a1f537" class="">get 요청 #2</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="c04bea0b-fbd4-4fc8-a9a6-0e68bd219faa" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">async function test1() {
+  const response = await axios.get(&#x27;/서버 URL&#x27;);
+  const data = response.data;
+}</code></pre><p id="ae0d0627-9b07-418a-8185-bfb38d12d115" class="">async, await를 활용한 구현 방법<br/>본문에 await 키워드가 있는 함수의 앞 부분에 반드시 async 키워드를 붙여야 한다.<br/></p><p id="70f2e746-6ab3-4504-8b87-496aabfda742" class="">async, await 문법을 활용하면, javascript의 비동기 작업을 동기 작업처럼 편하게 구현할 수 있다.</p><p id="4bf7d7de-792e-4571-aa20-a203fc4c48f6" class="">
+</p><p id="ca0d8d79-7662-4c87-8c71-35d0f4a16b07" class="">위 코드가 동기 작업이라면,</p><ol type="1" id="4371efa3-ba07-4d35-9c24-435f1f191808" class="numbered-list" start="1"><li>axios.get 메소드는 즉시 리턴하지 않는다. 서버의 응답이 웹브라우저에 도착하면, 그 때 리턴한다. 이 메소드의 리턴값은, 서버의 응답이다.</li></ol><ol type="1" id="d3dc3f8c-d8d3-4f99-a2f5-3170869e9ae9" class="numbered-list" start="2"><li>그 다음 줄이 실행된다.</li></ol><p id="1569c77f-74ac-4241-95f2-739749c0d647" class="">그러나 위 코드는 동기 작업이 아니고, 비동기 작업이다.</p><p id="f9d50dd7-5069-4aca-ba6c-cdaa23c5e362" class="">위와 같이 axios.get 메소드 호출이 동기(synchronous) 호출인 것처럼 편하게 구현할 수 있다.<div class="indented"><p id="ad547faf-19b6-48c9-90bc-df6dbca9054a" class="">그러나 여전히 axios.get 메소드는 비동기 실행된다.<br/>그렇지만 마치 동기인 것처럼 위와 같이 구현해도, javascript 엔진이 잘 실행해 준다.<br/></p></div></p><p id="891585a6-df1a-4582-a2fb-e32ce8ee76a0" class="">
+</p><hr id="7e6e1804-2810-4237-a930-fdea352eb15a"/><p id="c9490805-014b-4c00-b166-3702166e24af" class="">
+</p><h1 id="7b635da1-0150-4759-b25d-689d87852a7b" class="">프로젝트 생성 및 axios 설정</h1><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="839fe566-d178-42b2-a969-321f45b13fcb" class="code"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">npx create-react-app news-tutorial
+
+cd news-tutorial
+
+npm install axios</code></pre><p id="5d41ff43-4a54-4db7-84e3-835e8d4f0a51" class="">
+</p><h3 id="972bf7aa-f8c0-42d1-b50a-d271dc2ed426" class="">newsapi API 키 발급</h3><p id="4a20bb2c-9377-4121-9df9-01b88ffcf9db" class="">newsapi에서 제공하는 API를 사용해 최신 뉴스를 불러온 후 보여줄 것이다. </p><p id="86481dc4-8110-4c4e-ae24-550d98f7b914" class="">이를 수행하기 위해서 사전에 newsapi에서 API키를 발급받아야 한다. </p><p id="f0dd7f76-718e-4123-978e-a27d22900229" class="">
+</p><p id="71410f53-0fba-4679-9de4-5b5ef0826eb8" class="">API 키는<strong><a href="https://newsapi.org/register">https://newsapi.org/register</a></strong>에 가입하면 발급받을 수 있다.</p><p id="ea4468b0-355e-420b-a212-02ad9d73c34b" class="">발급받은 API 키는 추후 API를 요청할 때 API주소의 쿼리 파라미터로 넣어서 사용하면 된다.</p><p id="6f152c2f-8720-42c7-816d-7d30bfd071e9" class="">
+</p><p id="08f73fbe-a1d9-4089-8aff-6615781d3536" class="">우리가 사용할 API는<strong><a href="https://newsapi.org/s/south-korea-news-api">https://newsapi.org/s/south-korea-news-api</a></strong>링크에 들어가면,</p><p id="f9e548d7-f960-4765-82c0-3764485fd059" class="">한국 뉴스를 가져오는 API에 대한 설명서가 있다.</p><figure id="cbb392de-463b-443d-a227-4ed45c79c2ba" class="image"><a href="%25EC%25BA%25A1%25EC%25B2%2598.jpg"><img style="width:569.1937866210938px" src="%25EC%25BA%25A1%25EC%25B2%2598.jpg"/></a></figure><figure id="7a47879d-4e98-430e-bd86-ef74507a454e" class="image"><a href="%25EC%25BA%25A1%25EC%25B2%2598%201.jpg"><img style="width:503.9937438964844px" src="%25EC%25BA%25A1%25EC%25B2%2598%201.jpg"/></a></figure><h3 id="ffdd568e-c43a-4e26-82e3-857c331aa080" class="">사용할 API 주소는 두 가지 형태이다.</h3><p id="acf086a1-b4a7-4c8c-95b9-1f3ac50a3f06" class="">
+</p><ol type="1" id="182fb57b-eb24-43a7-a435-a2e6f3645587" class="numbered-list" start="1"><li><strong>전체 뉴스 불러오기</strong><ol type="a" id="4638c77e-868a-4752-a0d1-879d057f5c6d" class="numbered-list" start="1"><li>https://newsapi.org/v2/top-headlines?<strong>country=kr</strong>&amp;apiKey=ec72d3fbc6c54c8a8757d23b079a9430</li></ol><p id="ab3d380b-7bef-4147-97e4-b6e40c293af2" class="">
+</p></li></ol><ol type="1" id="4b92296c-30e9-4a9c-aedf-ad3569c760fc" class="numbered-list" start="2"><li><strong>특정 카테고리 뉴스 불러오기</strong><ol type="a" id="28f1a9e5-750a-40f7-befa-a37bd6c5e19c" class="numbered-list" start="1"><li>https://newsapi.org/v2/top-headlines?<strong>country=kr</strong>&amp;category=business&amp;apiKey=ec72d3fbc6c54c8a8757d23b079a9430</li></ol></li></ol><p id="fb072a99-86c7-4173-bd74-aa7e74fbba61" class="">
+</p><h3 id="b59f5206-1a9e-4b6d-95e1-ea2c53839415" class="">App.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="216a68e8-15b8-445e-b0d5-6cc41e2b3441" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import axios from &quot;axios&quot;;
+import { useState } from &quot;react&quot;;
+
+const App = () =&gt; {
+  const [data, setData] = useState(null);
+  const onClick = async () =&gt; {
+    try {
+      const response = await axios.get(
+        &quot;https://newsapi.org/v2/top-headlines?country=kr&amp;apiKey=ec72d3fbc6c54c8a8757d23b079a9430&quot;
+      );
+      setData(response.data);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+  
+  return (
+    &lt;div&gt;
+      &lt;div&gt;
+        &lt;button onClick={onClick}&gt;불러오기&lt;/button&gt;
+      &lt;/div&gt;
+      {data &amp;&amp; (
+        &lt;textarea
+          rows={7}
+          value={JSON.stringify(data, null, 2)}
+          readOnly={true}
+        /&gt;
+      )}
+    &lt;/div&gt;
+  );
+}
+
+export default App;</code></pre><p id="a2c150d9-70dc-4c2e-b9dd-17d02753f1a4" class=""><strong>&lt;button onClick={onClick}&gt;불러오기&lt;/button&gt;</strong><div class="indented"><p id="b092bb1c-8c6c-4ee7-8662-936ba1f11baa" class="">버튼을 클릭하면 onClick비동기 함수가 호출<div class="indented"><p id="9392ffe3-3ca5-4e14-98cd-fc41af0fb1db" class=""><strong>async function onClick() {</strong></p></div></p></div></p><p id="e2adc576-91e8-4a8d-8f69-5e639da6a25d" class="">
+</p><p id="5d0a0e00-7a41-492f-acbc-bd0a5ecb0c01" class=""><strong>const response = await axios.get( &quot;https://newsapi.org/v2/top-headlines?country=kr&amp;apiKey=ec72d3fbc6c54c8a8757d23b079a9430&quot; );</strong><div class="indented"><p id="feb0a9e4-bd2a-4e33-8b6f-0fb089c5990a" class="">try문 안쪽에서 axios의 get메소드로 뉴스 API를 요청</p><p id="a89cc42f-8939-42be-872c-0949ae6027c7" class="">
+</p><p id="056329bc-a32e-4f08-b757-70692f884bd6" class=""><strong>setData(response.data);</strong><div class="indented"><p id="70d959df-3e50-4538-9fd7-20e30edfec72" class="">추후에 응답을 받으면 setData메서드로 요청한 data를 받음</p></div></p></div></p><p id="91d41453-28df-4330-9cc7-3f05f4e10fda" class="">
+</p><p id="455d7067-f62a-40fe-887d-2ad0ab6b7ca2" class=""><strong>{data &amp;&amp; (<br/>    &lt;textarea<br/>      rows={7}<br/>      value={JSON.stringify(data, null, 2)}<br/>      readOnly={true}<br/>    /&gt;<br/>)}<br/></strong><div class="indented"><p id="07ad0c15-99a6-4092-b5a0-6b166a6dad21" class="">data를 받아오면 value값으로 data값을 textarea에 출력</p><p id="dda908ec-ff6b-4656-b8c3-8a4a5a2e6efe" class=""><strong>JSON.stringify(value, replacer, space)</strong></p><p id="54d9fa35-b7cb-454e-a111-fa73c7f97977" class="">
+</p><p id="54b27a5c-e324-4311-b978-07b86c010215" class=""><strong>replacer</strong> = 문자열화 동작 방식을 변경하는 함수</p><p id="c006e4b5-c0de-4349-9990-343bd9b5f976" class="">replacer가 null 이면, 객체의 모든 속성들이 JSON문자열 결과에 포함됨</p><p id="08b46ef9-a0a8-4058-bd90-be38422675da" class="">
+</p><p id="63e49fcd-a148-4920-afc2-be39d746c355" class=""><strong>space</strong> = JSON 문자열 출력에 공백을 삽입하는데 사용</p><p id="1b92398b-8e21-4116-8d20-063c0baf51e9" class="">space가 1 보다 작으면 스페이스가 사용되지 않는 것을 나타낸다.</p></div></p><p id="49360c1f-8737-4596-a985-06696dd14c60" class="">
+</p><figure id="a7c3f125-e7e4-4fc2-b424-97b8307ee429" class="image"><a href="Untitled.png"><img style="width:447.5px" src="Untitled.png"/></a></figure><h3 id="9b4ca6d9-7bfd-4e32-8e87-a5b203d3bd00" class="">뉴스 데이터가 지니고 있는 정보</h3><ul id="38a43ec2-912e-441d-8cdb-90f9d3a90f81" class="bulleted-list"><li style="list-style-type:disc">title : 제목</li></ul><ul id="2048a4c6-2a37-4fe5-89f3-c372aa86083f" class="bulleted-list"><li style="list-style-type:disc">description : 내용</li></ul><ul id="4e474c03-4453-4587-92ff-36ee19522ca4" class="bulleted-list"><li style="list-style-type:disc">url : 링크</li></ul><ul id="5f261219-177c-4788-b06f-82726b84c1e8" class="bulleted-list"><li style="list-style-type:disc">urlToImage : 뉴스 이미지</li></ul><p id="74ba9366-5941-4f6b-9c24-58b30de84a29" class="">
+</p><hr id="9d15f41b-eadb-46d3-b430-7b92ebd3ab39"/><h1 id="e363afe7-3b41-4f4a-b6fa-b73769fa74e9" class="">뉴스 뷰어 UI 만들기</h1><p id="3b7728d1-a404-452f-8ac5-84996f8b6749" class="">styled-components를 사용해 뉴스 정보를 보여 줄 컴포넌트를 만들어보자</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="0cb9c206-3c5d-4cb6-b2af-b47d2e748780" class="code"><code class="language-Bash">npm install styled-components</code></pre><p id="ee4190a7-59f8-4a77-bedf-9cda7512454a" class="">
+</p><p id="f747c369-18fd-4e13-a6b5-1b70813aeae8" class="">src 디렉터리 안에 <strong>components 디렉터리</strong>를 생성한 뒤, </p><p id="fa474b91-1d85-4811-9c2c-63be2a60422c" class="">그 안에<strong> NewsItem.tsx</strong>와 <strong>NewsList.tsx</strong>를 생성한다.</p><ul id="ea8ecfc7-2342-4720-bf73-3c0b566e6d40" class="bulleted-list"><li style="list-style-type:disc"><strong>NewsItem </strong>: 각 뉴스 정보를 보여주는 컴포넌트</li></ul><ul id="ced8f108-f964-4535-be57-14883a0e4320" class="bulleted-list"><li style="list-style-type:disc"><strong>NewsList</strong> : API를 요청하고 뉴스 데이터가 들어 있는 배열을 컴포넌트 배열로 변환해 렌더링해주는 컴포넌트</li></ul><p id="df2e2810-92a4-461d-915c-b93ac35d71b9" class="">
+</p><h2 id="9b82e5aa-0c4c-4478-a9a1-e60a1c53f965" class="">components/NewsList.js</h2><p id="9bac70d2-c9bc-404d-8a9e-4530194a0198" class="">NewsList 컴포넌트를 통해 API를 요청하게 될 것인데, </p><p id="0a9c53cd-6bf2-42b9-b996-0d260356307a" class="">아직 데이터를 불러오지 않고 있으니, </p><p id="9431bdd1-2b9b-4aa6-b13f-a5c262e9b31d" class="">sampleArticle이라는 객체에 미리 예시 데이터를 넣은 후, <div class="indented"><p id="5d633a50-12b6-44c5-b340-b2e744705389" class="">각 컴포넌트에 전달해 가짜 내용이 보이도록 만들어보자.</p></div></p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="bf8c34a7-6122-47f4-bbe2-9b7fcc3150b9" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import styled from &quot;styled-components&quot;;
+import NewsItem from &quot;./NewsItem&quot;;
+
+const NewsListBlock = styled.div`
+  box-sizing: border-box;
+  padding-bottom: 3rem;
+  width: 768px;
+  margin: 0 auto;
+  margin-top: 2rem;
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+`;
+
+const sampleArticle = {
+  title: &quot;제목&quot;,
+  description: &quot;내용&quot;,
+  url: &quot;https://google.com&quot;,
+  urlToImage: &quot;https://via.placeholder.com/160&quot;,
+};
+
+const NewsList = () =&gt; {
+  return (
+    &lt;NewsListBlock&gt;
+      &lt;NewsItem article={sampleArticle} /&gt;
+      &lt;NewsItem article={sampleArticle} /&gt;
+      &lt;NewsItem article={sampleArticle} /&gt;
+      &lt;NewsItem article={sampleArticle} /&gt;
+      &lt;NewsItem article={sampleArticle} /&gt;
+      &lt;NewsItem article={sampleArticle} /&gt;
+    &lt;/NewsListBlock&gt;
+  );
+}
+
+export default NewsList;</code></pre><p id="e86b8328-23a4-4ae2-9409-9fde0fab4072" class="">
+</p><p id="c32dad8d-8ab2-4800-b2e2-683f3bf8b2cd" class=""><strong>&lt;NewsListBlock&gt;</strong>은 styled-components로, 뉴스 목록 전체를 감싸는 <strong>div</strong>이다.<div class="indented"><p id="a773a4f2-8b6e-47e9-9ca2-6babc1cad8dd" class="">미디어 쿼리를 사용해 화면 크기가 768px 이하일 때는 전체 화면 너비를 차지하도록 변경된다</p></div></p><p id="e6a52831-2c2e-4e65-a7d2-834c0186e873" class="">
+</p><p id="f39c5e84-4117-4ca2-b933-097f9aaa866b" class=""><strong>{sampleArticle}</strong>은 뉴스 목록에 보여지는 각각의 뉴스 항목의 데이터를 담고 있는 객체이다. <div class="indented"><p id="fa7aba0a-ba04-4490-bcf7-99c6f7beffef" class="">title, description, url, urlToImage 등의 프로퍼티를 가지고 있다.</p></div></p><p id="1ab91b29-1eff-4a69-a38d-0fbbcbbcb943" class="">
+</p><p id="1b5017e6-6ca3-4994-83a2-a0f610a21f36" class=""><strong>&lt;NewsItem article={sampleArticle} /&gt;</strong><div class="indented"><p id="c2801e44-6ed6-462b-8c2d-5b795452b9dd" class="">article 프로퍼티를 통해 각각의 뉴스 항목 데이터를 전달하고, NewsItem 컴포넌트에서는 해당 데이터를 화면에 표시 한다.</p><p id="336d9443-154e-453f-aebd-507e72a97d04" class="">
+</p></div></p><p id="6e329745-5927-4094-a227-5362985cb47e" class="">더 많은 뉴스 항목이 있다면 동적으로 데이터를 받아와 렌더링하도록 수정할 수 있다</p><p id="17d4d765-d068-435e-b71c-45778ff65c07" class="">
+</p><h2 id="2f2698fa-80d0-4a98-9b24-fb09b51b7576" class=""><strong>components/NewsItem.js</strong></h2><p id="ab40db51-c5ae-41a5-ad5f-ac101c7ed602" class="">NewsItem 컴포넌트는 article이라는 객체를 props 통째로 받아와서 사용하게 된다.</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="d471c0bf-ce9d-47a6-bb42-950d76fe87c4" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import styled from &quot;styled-components&quot;;
+
+const NewsItemBlock = styled.div`
+  display: flex;
+  .thumbnail {
+    margin-right: 1rem;
+    img {
+      display: block;
+      width: 160px;
+      height: 100px;
+      object-fit: cover;
+    }
+  }
+  .contents {
+    h2 {
+      margin: 0;
+      a {
+        color: black;
+      }
+    }
+    p {
+      margin: 0;
+      line-height: 1.5;
+      margin-top: 0.5rem;
+      white-space: normal;
+    }
+  }
+  &amp; + &amp; {
+    margin-top: 3rem;
+  }
+`;
+
+const NewsItem = ({ article }) =&gt; { //전달 받은 article 객체를 받아서
+  const { title, description, url, urlToImage } = article; //각각의 프로퍼티 값을 추출하고
+  return (
+	  // 추출된 프로퍼티를 화면에 렌더링 해줍니다.
+    &lt;NewsItemBlock&gt;
+      {urlToImage &amp;&amp; (
+        &lt;div className=&quot;thumbnail&quot;&gt;
+          &lt;a href={url} target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;
+            &lt;img src={urlToImage} alt=&quot;thumbnail&quot; /&gt;
+          &lt;/a&gt;
+        &lt;/div&gt;
+      )}
+      &lt;div className=&quot;contents&quot;&gt;
+        &lt;h2&gt;
+          &lt;a href={url} target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;
+            {title}
+          &lt;/a&gt;
+        &lt;/h2&gt;
+        &lt;p&gt;{description}&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/NewsItemBlock&gt;
+  );
+}
+
+export default NewsItem;</code></pre><p id="1c1c3f44-5265-40ea-8947-8090e1a6f2d5" class="">
+</p><h2 id="f2d38c9b-cf57-448b-b5e1-13a83b3cc5cd" class="">App.js</h2><p id="5042aec1-f310-4a0c-85ef-700c1ccac62a" class="">기존에 작성했던 코드는 모두 지우고, NewsList만 렌더링해 보세요.</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="5aaefea3-4168-44a5-9ceb-7346fd4d97ea" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import NewsList from &quot;./components/NewsList&quot;;
+
+const App = () =&gt; {
+  return &lt;NewsList /&gt;;
+}
+
+export default App;</code></pre><p id="17319210-0256-4d03-9383-09ec411bc668" class="">
+</p><figure id="68413f84-f680-488f-a6ad-9902e94d35f7" class="image"><a href="Untitled%201.png"><img style="width:904px" src="Untitled%201.png"/></a></figure><p id="9d1c2dda-d772-47b9-b8f2-4ceeddab08a3" class="">
+</p><h1 id="47373225-0eea-41fd-a7d7-7e764a1f6f12" class="">데이터 연동</h1><p id="cf16d241-1829-49ef-8c29-1613b2b57746" class="">이제는 뉴스 API를 이용해 API를 호출해보겠습니다. </p><p id="262da73e-f3a6-4d20-87b0-50cd68136096" class="">useEffect를 사용해 컴포넌트가 처음 렌더링되는 시점에 API를 요청하면 됩니다. </p><p id="268db41d-37d9-42cb-9a54-b2c81068dc37" class="">주의할 점은 useEffect에 등록하는 함수에 async를 붙이면 안된다는 것이다. </p><p id="fe07278f-19bd-4a38-8c9d-872f3e508b72" class="">useEffect에서 반환해야하는 값은 “뒷정리 함수”이기 때문에 </p><p id="df604ec2-ef6a-4721-b954-fbb6e426b795" class="">useEffect 내부에서 async/await을 사용하고 싶다면, </p><p id="e8f1e3e4-fa41-4890-abe6-22f64fc7e156" class="">함수 내부에 async 키워드가 붙은 또 다른 함수를 만들어 사용해야 합니다.</p><p id="769f175e-04e5-4c85-b230-4aeedb6e667c" class="">
+</p><p id="1b4087d5-5e95-48eb-859a-723bea936cd4" class="">추가로 loading이라는 상태를 관리해 API 요청이 대기 중인지 판별하고, </p><p id="78fde9e1-bb5a-4ad5-8b04-88dff059c34e" class="">요청이 대기 중일 때는 loading 값이 true 가 되고, 요청이 끝나면 loading 값이 false가 되어야 한다.</p><p id="96875fe0-ce04-4643-8eac-fbf85ff5c631" class="">
+</p><p id="3650620c-9025-43d9-b8d7-b93016898e1a" class=""><strong>참고</strong> : 뒷정리 함수 = 컴포넌트가 언마운트 되기 직전 또는 변경될 때 실행되는 함수</p><p id="a56fb902-d628-4bb2-84b5-2ed1b3f1e8aa" class="">
+</p><h2 id="048e66ba-f32e-4582-87b8-96d07a0715fa" class=""><strong>components/</strong>NewsList.js</h2><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="4deedfa8-e89c-418b-abf2-5a5e6c85a9f8" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import { useEffect, useState } from &quot;react&quot;;
+import styled from &quot;styled-components&quot;;
+import NewsItem from &quot;./NewsItem&quot;;
+import axios from &quot;axios&quot;;
+
+const NewsListBlock = styled.div`
+  box-sizing: border-box;
+  padding-bottom: 3rem;
+  width: 768px;
+  margin: 0 auto;
+  margin-top: 2rem;
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+`;
+
+const NewsList = () =&gt; {
+	//useState훅을 사용하여 뉴스 목록과 로딩 상태가 저장
+  const [articles, setArticles] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() =&gt; {
+	  //async를 사용하는 함수 따로 선언
+    const fetchData = async () =&gt; {
+      setLoading(true); //로딩 상태를 true로 지정
+      try {
+	      //axios.get메서드를 호출하고 뉴스 데이터를 가져옴
+        const response = await axios.get(
+          &quot;https://newsapi.org/v2/top-headlines?country=kr&amp;apiKey=181cd9b8483e41039a15395e41f3b50b&quot;
+        );
+        //가져온 뉴스 목록을 setArticles를 사용하여 컴포넌트의 상태에 저장
+        setArticles(response.data.articles);
+      } catch (e) { //실패시 에러 메시지 표시
+        console.log(e);
+      }
+      //데이터를 상태에 저장하면 로딩 상태를 false로 지정
+      setLoading(false);
+    }
+    fetchData(); //fetchData함수 호출
+  }, []);
+
+  if (loading) { //로딩 상태가 true면 NewsListBlock에 대기 중이라는 문구를 출력해서 리턴
+    return &lt;NewsListBlock&gt;대기 중...&lt;/NewsListBlock&gt;;
+  }
+
+  if (!articles) { //로딩 상태가 false면 null을 리턴(이를 통해 컴포넌트가 렌더링 되지 않는다)
+    return null;
+  }
+
+//map()메서드를 사용하여 뉴스 목록을 반복하고, NewsItem컴포넌트를 사용해 각 뉴스 항목을 렌더링 한다. 각 뉴스 항목의 고유 식별자로 key속성이 사용된다.
+  return (
+    &lt;NewsListBlock&gt;
+      {articles.map((article) =&gt; (
+        &lt;NewsItem key={article.url} article={article} /&gt;
+      ))}
+    &lt;/NewsListBlock&gt;
+  );
+}
+
+export default NewsList;</code></pre><figure id="f40ab90e-5dd3-497c-99ab-1ed62c03b768" class="image"><a href="Untitled%202.png"><img style="width:697px" src="Untitled%202.png"/></a></figure><p id="928ab8a2-1ba5-4fc8-a3a9-aed00ebf1535" class="">
+</p><hr id="cecc61c0-1a04-472f-902b-7b931e1d9e65"/><h1 id="b429e6a3-ba4f-4f50-b336-289991119744" class="">카테고리 기능 구현</h1><p id="804bba91-76b3-4bfa-8f23-3ddffc81db25" class="">뉴스의 카테고리 선택 기능을 구현해보자. 뉴스 카테고리는 총 여싯개이며, 다음과 같이 영어로 되어있다.</p><ul id="e12b4e37-d205-4fcd-98f0-024135a9a01f" class="bulleted-list"><li style="list-style-type:disc">business</li></ul><ul id="0f44c4ae-9b3d-4c0b-ab87-683c85ccb2d3" class="bulleted-list"><li style="list-style-type:disc">entertainment</li></ul><ul id="022fca68-cec4-42c3-b9f0-78657d507c8c" class="bulleted-list"><li style="list-style-type:disc">health</li></ul><ul id="c51ea10b-e49b-431d-b57b-8b9aaad509c1" class="bulleted-list"><li style="list-style-type:disc">science</li></ul><ul id="f0835218-1a47-4a27-b2c0-2a96558520ee" class="bulleted-list"><li style="list-style-type:disc">sports</li></ul><ul id="dd435015-868a-4dce-897d-a744549eacec" class="bulleted-list"><li style="list-style-type:disc">technology</li></ul><p id="cb6cd083-6447-459b-9b60-443fe04ac296" class="">
+</p><p id="57f4b341-941d-4212-a50f-1cbcdeb2d31d" class="">이 종류들을 화면 상에서는 영어 대신 한글로 보여준 뒤, 클릭했을 때는 영어로 된 카테고리 값을 사용하도록 구현해봅시다.</p><p id="5357233f-630e-42db-8ae7-1e55d72e24c7" class="">
+</p><h3 id="605e6a0a-dffd-49aa-9abb-04d6fc42ed80" class=""><strong>카테고리 선택 UI 만들기</strong></h3><h3 id="1a793310-1e52-471d-8810-b4a330eb5fce" class="">src &gt; components &gt; Categories.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="4a42fb4f-981c-4654-b940-7d11300a2ce1" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import styled from &quot;styled-components&quot;;
+//카테고리 목록은 배열안에 name과 text 값이 들어가 있는 객체들로 넣어 줌
+//여기서 name은 실제 카테고리 값을 가리키고, text는 렌더링할 때 사용할 한글 카테고리를 가리킵니다.
+const categories = [
+  {
+    name: &quot;all&quot;,
+    text: &quot;전체보기&quot;,
+  },
+  {
+    name: &quot;business&quot;,
+    text: &quot;비즈니스&quot;,
+  },
+  {
+    name: &quot;entertainment&quot;,
+    text: &quot;연예&quot;,
+  },
+  {
+    name: &quot;health&quot;,
+    text: &quot;건강&quot;,
+  },
+  {
+    name: &quot;science&quot;,
+    text: &quot;과학&quot;,
+  },
+  {
+    name: &quot;sports&quot;,
+    text: &quot;스포츠&quot;,
+  },
+  {
+    name: &quot;technology&quot;,
+    text: &quot;기술&quot;,
+  },
+];
+//CategoriesBlock스타일 컴포넌트의 스타일
+const CategoriesBlock = styled.div`
+  display: flex;
+  padding: 1rem;
+  width: 768px;
+  margin: 0 auto;
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    overflow-x: auto;
+  }
+`;
+
+//Category스타일 컴포넌트의 스타일
+const Category = styled.div`
+  font-size: 1.125rem;
+  cursor: pointer;
+  white-space: pre;
+  text-decoration: none;
+  color: inherit;
+  padding-bottom: 0.25rem;
+  &amp;:hover {
+    color: #495057;
+  }
+
+  &amp; + &amp; {
+    margin-left: 1rem;
+  }
+`;
+
+const Categories = () =&gt; {
+  return (
+  //map메서드로 categories배열의 갯수 만큼 Category컴포넌트를 CategoriesBlock컴포넌트에 자식요소로 넣어주고 key로는 카테고리의 name을 사용하고 text를 표시
+    &lt;CategoriesBlock&gt;
+      {categories.map((c) =&gt; (
+        &lt;Category key={c.name}&gt;{c.text}&lt;/Category&gt;
+      ))}
+    &lt;/CategoriesBlock&gt;
+  );
+}
+
+export default Categories;</code></pre><h3 id="43ea8096-4e13-44a4-a4dd-30bcf4b88e42" class="">App.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="06653286-2691-4dd8-9f2d-51ae46bfb09c" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">//App컴포넌트에 임포트 하고 결과 확인
+import Categories from &quot;./components/Categories&quot;;
+import NewsList from &quot;./components/NewsList&quot;;
+
+const App = () =&gt; {
+	return (
+		&lt;&gt;
+			&lt;Categories /&gt;
+		  &lt;NewsList /&gt;
+		&lt;/&gt;
+	)
+}
+
+export default App;</code></pre><p id="66b29e47-5fb4-4512-91bf-c8d7947f9fb5" class="">
+</p><figure id="1aa31551-bf1e-41d8-b313-c6f9c419f808" class="image"><a href="Untitled%203.png"><img style="width:905px" src="Untitled%203.png"/></a></figure><p id="9819af87-faea-41a6-a282-e146397c4a97" class="">
+</p><p id="7c03b9d6-5e0c-44fb-aa6c-011ebe848226" class="">App에서 category 상태를 useState로 관리하겠습니다. </p><p id="ddaf0cc2-9d3c-4bec-bb76-fe7f4291c32b" class="">추가로 category 값을 업데이트하는 onSelect라는 함수도 만들어주고, category와 onSelect 함수를 Categories 컴포넌트에게 props로 전달해주겠습니다. </p><p id="418cf970-f523-4dd9-a047-2516e5670bb9" class="">또한, category 값을 NewsList 컴포넌트에게도 전달해주어야 합니다.</p><h3 id="681f16d9-d329-4861-aa6b-3dc5ff861989" class="">App.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="69756ece-cdc8-408f-8ea3-347ea9cf4f1a" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import { useCallback, useState } from &quot;react&quot;;
+import Categories from &quot;./components/Categories&quot;;
+import NewsList from &quot;./components/NewsList&quot;;
+
+const App = () =&gt; {
+//category상태의 초기값을 &quot;all&quot;로 설정
+  const [category, setCategory] = useState(&quot;all&quot;);
+//카테고리 메뉴를 클릭하면 setCategory메서드를 호출하여 category상태를 변경
+  const onSelect = useCallback((category) =&gt; setCategory(category), []);
+
+  return (
+  //onSelect는 Categories컴포넌트에서 카테고리 메뉴를 클릭하면 선택된 카테고리를 onSelect로 전달 받는다.
+    &lt;&gt;
+      &lt;Categories category={category} onSelect={onSelect} /&gt;
+      &lt;NewsList /&gt;
+    &lt;/&gt;
+  );
+}
+
+export default App;</code></pre><h3 id="8c2f74e6-5210-4df5-b69a-2085947d4c93" class="">components/Categories.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2a63b4b3-656d-49ae-be24-b41b8e6ad87d" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import styled, { css } from &quot;styled-components&quot;;
+
+const categories = [
+  { name: &quot;all&quot;, text: &quot;전체보기&quot; },
+  { name: &quot;business&quot;, text: &quot;비즈니스&quot; },
+  { name: &quot;entertainment&quot;, text: &quot;연예&quot; },
+  { name: &quot;health&quot;, text: &quot;건강&quot; },
+  { name: &quot;science&quot;, text: &quot;과학&quot; },
+  { name: &quot;sports&quot;, text: &quot;스포츠&quot; },
+  { name: &quot;technology&quot;, text: &quot;기술&quot; },
+];
+
+const CategoriesBlock = styled.div`
+  display: flex;
+  padding: 1rem;
+  width: 768px;
+  margin: 0 auto;
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    overflow-x: auto;
+  }
+`;
+
+const Category = styled.div`
+  font-size: 1.125rem;
+  cursor: pointer;
+  white-space: pre;
+  text-decoration: none;
+  color: inherit;
+  padding-bottom: 0.25rem;
+
+  &amp;:hover {
+    color: #495057;
+  }
+//전달 받은 Props의 active값이 true일 경우에만 스타일이 적용됩니다. 
+  ${(props) =&gt;
+    props.active &amp;&amp; css`
+      font-weight: 600;
+      border-bottom: 2px solid #22b8cf;
+      color: #22b8cf;
+
+      &amp;:hover {
+        color: #3bc9db;
+      }
+  `}
+
+  &amp; + &amp; {
+    margin-left: 1rem;
+  }
+`;
+
+const Categories = ({ onSelect, category }) =&gt; {
+  return (
+    &lt;CategoriesBlock&gt;
+      {categories.map(c =&gt; (
+        &lt;Category
+          key={c.name}
+          active={category === c.name}
+          onClick={() =&gt; onSelect(c.name)}
+        &gt;
+          {c.text}
+        &lt;/Category&gt;
+      ))}
+    &lt;/CategoriesBlock&gt;
+  );
+}
+
+export default Categories;</code></pre><p id="38414c85-79ad-4218-a642-d1b68dbff509" class="">
+</p><p id="6b4fc21e-f27e-47f4-abf5-c20c52051b8f" class=""><strong>function Categories({ onSelect, category }) {</strong><div class="indented"><p id="702bbb0d-6fd0-4fb4-b364-ea457ea221f9" class="">Categories 컴포넌트는 onSelect와 category props를 받는다</p><p id="036c7f7e-687d-4145-bcfd-e79376298a57" class="">
+</p></div></p><p id="172bf3d4-0219-4684-a0e9-f271e4a4bedd" class=""><strong>{categories.map((c) =&gt; (<br/>    &lt;Category<br/>      key={c.name}<br/>      active={category === c.name}<br/>      onClick={() =&gt; onSelect(c.name)}<br/>    &gt;<br/>      {c.text}<br/>    &lt;/Category&gt;<br/>))}<br/></strong><div class="indented"><p id="6fa2dc15-9d23-4334-9742-1448d69ad0b3" class="">Categories컴포넌트는 map 함수를 사용하여 각 카테고리를 렌더링하고 active props를 통해 현재 선택된 카테고리를 표시한다.</p><p id="fb33f0b4-01e9-48c9-9923-4bd8df65d98e" class="">클릭 이벤트는 onClick함수를 호출하여 선택된 카테고리를 App컴포넌트에 전달한다.</p></div></p><figure id="435f5ab9-e7b8-4cba-90c3-36f70fdd49b4" class="image"><a href="Untitled%204.png"><img style="width:907px" src="Untitled%204.png"/></a></figure><p id="63665a21-c687-47ac-b569-c8d09638f063" class="">
+</p><hr id="a5292b3f-b756-4a18-b0fe-f1a7c9717e64"/><h1 id="2ccfd5ec-f83c-4fdb-9eb1-fb1b514435d8" class="">API 호출 시 카테고리 지정하기</h1><p id="aaed0e2b-ea79-42ab-ac61-e3819906e97c" class="">지금은 뉴스 API를 요청할 때 따로 카테고리를 선택하지 않고 뉴스 목록을 불러오고 있다. </p><p id="0408cdec-191d-477f-99a5-a7982f1b8409" class="">NewsList 컴포넌트에서 현재 props로 받아 온 category에 따라 카테고리를 지정해 API를 요청하도록 구현해봅시다.</p><h3 id="2c85cd85-4dc7-44b8-88a1-b434b0882437" class="">App.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="3b8a814d-48c9-45d1-bbee-863a45c4b24a" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import { useCallback, useState } from &quot;react&quot;;
+import Categories from &quot;./components/Categories&quot;;
+import NewsList from &quot;./components/NewsList&quot;;
+
+const App = () =&gt; {
+  const [category, setCategory] = useState(&quot;all&quot;);
+  const onSelect = useCallback((category) =&gt; setCategory(category), []);
+
+  return (
+    &lt;&gt;
+      &lt;Categories category={category} onSelect={onSelect} /&gt;
+      &lt;NewsList category={category} /&gt;
+    &lt;/&gt;
+  );
+}
+
+export default App;</code></pre><p id="7c030ce5-1d2f-46e5-9c28-ea7e55bede86" class=""><strong>&lt;NewsList category={category} /&gt;</strong><div class="indented"><p id="276376f5-4095-49b1-817a-4b42eecc3d77" class="">category값을 NwesList컴포넌트로 전달</p></div></p><h3 id="8050b446-7ba1-43d3-b9a9-7debe18c6f22" class="">NewsList.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="86b81e39-cb51-44b4-bc4f-0451f9f4b12d" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import { useEffect, useState } from &quot;react&quot;;
+import styled from &quot;styled-components&quot;;
+import NewsItem from &quot;./NewsItem&quot;;
+import axios from &quot;axios&quot;;
+
+const NewsListBlock = styled.div`
+  box-sizing: border-box;
+  padding-bottom: 3rem;
+  width: 768px;
+  margin: 0 auto;
+  margin-top: 2rem;
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+`;
+
+const NewsList = ({ category }) =&gt; {
+  const [articles, setArticles] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() =&gt; {
+    const fetchData = async () =&gt; {
+      setLoading(true);
+      try {
+        const query = category === &quot;all&quot; ? &quot;&quot; : `&amp;category=${category}`;
+        const response = await axios.get(
+          `https://newsapi.org/v2/top-headlines?country=kr${query}&amp;apiKey=ec72d3fbc6c54c8a8757d23b079a9430`
+        );
+        setArticles(response.data.articles);
+      } catch (e) {
+        console.log(e);
+      }
+      setLoading(false);
+    }
+    fetchData();
+  }, [category]);
+
+  if (loading) {
+    return &lt;NewsListBlock&gt;대기 중...&lt;/NewsListBlock&gt;;
+  }
+
+  if (!articles) {
+    return null;
+  }
+
+  return (
+    &lt;NewsListBlock&gt;
+      {articles.map((article) =&gt; (
+        &lt;NewsItem key={article.url} article={article} /&gt;
+      ))}
+    &lt;/NewsListBlock&gt;
+  );
+}
+
+export default NewsList;</code></pre><p id="1c2972b0-e945-4c6d-b18a-2de7bb1696b9" class="">
+</p><p id="97e3bb1f-ed8d-4963-810f-09ba451d2bc9" class=""><strong>function NewsList({ category }) {</strong><div class="indented"><p id="5d75f88e-539a-4acb-b5e5-f697b86ecbf0" class="">App컴포넌트에서 전달받은 category값을 NewsList컴포넌트의 매개변수로 받음</p></div></p><p id="e372b534-6aec-4cdc-8f2e-27d2b92f5580" class="">
+</p><p id="14646be4-5a37-404d-a05f-b42ce7ad6fc3" class=""><strong>const query = category === &quot;all&quot; ? &quot;&quot; : `&amp;category=${category}`;<br/>        const response = await axios.get(<br/>          `https://newsapi.org/v2/top-headlines?country=kr${query}&amp;apiKey=ec72d3fbc6c54c8a8757d23b079a9430`<br/></strong><div class="indented"><p id="771bdbb3-8708-4730-ac7f-bcaeb14e3ddf" class="">category값이 “all”이면 빈 문자열을, “all”이 아니면 category값을 `&amp;category=${category}` 형태의 문자열로 query에 할당</p><p id="41a6a3b9-94bf-40c5-81bc-2a7ba013a43a" class="">axios.get()메서드로 API요청할 때 query값을 쿼리스트링에 추가하여 해당 카테고리의 뉴스를 불러옵니다.</p></div></p><figure id="32194f99-3535-46a8-9242-6c9dbbe436ae" class="image"><a href="%25EC%25BA%25A1%25EC%25B2%2598%202.jpg"><img style="width:697px" src="%25EC%25BA%25A1%25EC%25B2%2598%202.jpg"/></a></figure><figure id="acf530c6-8cf3-47ba-bf81-318e1cb307f9" class="image"><a href="Untitled%205.png"><img style="width:894px" src="Untitled%205.png"/></a></figure><p id="7cf9fca7-45bb-47a2-bd67-fe962d47d268" class="">
+</p><hr id="e02749fe-3782-4c2f-b163-a99ceb6744d0"/></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>

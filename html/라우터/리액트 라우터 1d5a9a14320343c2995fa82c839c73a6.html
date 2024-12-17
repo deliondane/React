@@ -1,0 +1,888 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>리액트 라우터</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-default_background {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(0, 0, 0, 0.06); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="1d5a9a14-3203-43c2-995f-a82c839c73a6" class="page sans"><header><h1 class="page-title">리액트 라우터</h1><p class="page-description"></p></header><div class="page-body"><h1 id="795f2841-688b-46b6-891f-79ededc581bd" class="">라우팅</h1><p id="c9ad6d05-9b67-4eed-8471-55e4a0d131a1" class="">라우팅(Routing)이란 웹 애플리케이션에서 사용자가 URL을 통해 페이지에 접근할 때 해당 URL에 따라 서로 다른 컴포넌트를 보여주는 것을 의미한다.</p><p id="fb1462a4-9537-4a7c-8412-21f099174811" class="">
+</p><p id="2d0cea19-d78c-4de8-80f8-0d3275b305bd" class="">일반적으로, 브라우저에서 URL을 입력하거나 링크를 클릭하면 URL의 경로(path)와 쿼리(query) 부분을 분석하여 해당하는 컴포넌트를 렌더링한다. 이 과정을 라우팅이라고 한다.</p><p id="ff5d30dc-431d-4ca6-a8ac-9c0071e1ac3c" class="">
+</p><h3 id="0d6d9e2f-a302-4eb2-a0e3-6ec56c651d56" class="">라우팅은 SPA(Single Page Application)를 구현하는 데 필수적</h3><p id="5a2caf6d-7889-4add-8be4-5a5d379e9914" class="">SPA는 초기 로딩 시 서버에서 모든 컨텐츠를 불러오는 것이 아니라 필요한 데이터만 가져와 화면을 구성하기 때문에, URL에 따라 다른 화면을 보여주는 라우팅이 필요하다. </p><p id="136bb75e-bdb7-485f-b1fe-9e7094ec1309" class="">또한, 브라우저의 뒤로 가기/앞으로 가기 버튼과 같은 브라우저 기능과의 호환성을 유지하기 위해서도 라우팅이 필요하다.</p><p id="4252f2d5-eae5-4f0b-abbf-a0fc08eae6fb" class="">React에서는 대표적으로react-router 라이브러리를 사용하여 라우팅을 구현한다. </p><p id="a4f522be-abf5-495a-b778-5b4566e9f401" class="">react-router를 사용하면 URL에 따라 렌더링될 컴포넌트를 선택하고, URL을 변경하여 다른 컴포넌트를 렌더링하는 등의 기능을 구현할 수 있다.</p><p id="ebaf78bb-80ae-4a89-a5a3-7d58af2ec30c" class="">
+</p><h1 id="46749612-aefc-4380-a231-a56af4004846" class=""><strong>SPA</strong></h1><p id="65b33e3e-45b3-4fb5-b71f-1176a5de29ea" class="">SPA (Single Page Application)는 하나의 웹 페이지로 구성된 애플리케이션이다. </p><p id="ccc23f9a-7ce3-445d-878e-6d3e5b9ee7e6" class="">전통적인 웹 페이지는 매번 새로운 페이지를 로딩하여 보여주기 때문에, 페이지 이동이 일어날 때마다 서버로부터 새로운 HTML, CSS 및 JavaScript 파일을 다운로드해야 한다. </p><p id="f6c75f6e-d557-4bd9-b496-d204197872c4" class="">하지만 SPA는 처음 한 번만 페이지를 로드하고, 그 이후에는 필요한 데이터만 서버로부터 받아와 동적으로 페이지를 변경한다.</p><p id="d8b641d9-0c93-412c-98e4-7481e2719e45" class="">SPA는 일반적으로 AJAX 기술을 사용하여 데이터를 비동기적으로 가져오고, JavaScript를 사용하여 동적으로 페이지를 렌더링한다. </p><p id="e72df004-b179-488e-a987-ca1385b69599" class="">이러한 방식은 사용자가 애플리케이션에서 상호작용할 때마다 새로운 페이지를 로드하지 않고도 빠르게 데이터를 가져오고 렌더링할 수 있다.</p><p id="4736699c-e115-4c42-8ce6-f7f3732be65f" class="">그러나, 검색 엔진 최적화(SEO)에 대한 문제와 초기 페이지 로딩 속도에 대한 고려가 필요하다.</p><p id="27c44599-ef29-4f3a-8f95-be53b56f8197" class="">
+</p><hr id="953534aa-cf02-4b85-b36f-2a400ca635f8"/><h1 id="c699b2d6-7a94-4209-8d4b-c9bcb6f58c18" class="">프로젝트 생성</h1><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2c714e54-652f-4ac1-8f18-08fd0d9e6eb9" class="code"><code class="language-Bash" style="white-space:pre-wrap;word-break:break-all">npx create-react-app router-tutorial
+
+# 라우터 설치
+npm install react-router-dom</code></pre><p id="f429fe33-3d76-49c9-8b56-72501a13012d" class="">
+</p><hr id="ffea8c11-4854-4598-983c-06f6de6a539f"/><h1 id="3e8d34a6-be4c-4c31-9e89-ec018ee2502a" class="">프로젝트에 라우터 적용</h1><p id="867f486b-3bba-4cae-a58a-49f02f5b9eb5" class="">프로젝트에 리액트 라우터를 작용할 때는 react-router-dom에 내장되어 있는 BrowserRouter라는 컴포넌트를 사용하여 감싸면 됩니다.</p><p id="a37b4473-4158-467f-95e7-b35c8f1393d0" class="">
+</p><p id="a301ee54-7238-4843-a85d-8f32834aa1cd" class="">이 컴포넌트는 웹 애플리케이션에 HTML5의 History API를 사용해 페이지를 새로 불러오지 않고도 주소를 변경하고 현재 주소의 경로에 관련된 정보를 리액트 컴포넌트에서 사용할 수 있도록 해 준다.</p><h3 id="ac6e1aa6-a573-4f7f-9878-7e13a42c0e0b" class="">index.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="261dc3a4-8f7c-4440-91c5-e76abe02d613" class="code"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">import { BrowserRouter } from &#x27;react-router-dom&#x27;;
+import React from &#x27;react&#x27;;
+import ReactDOM from &#x27;react-dom/client&#x27;;
+import &#x27;./index.css&#x27;;
+import App from &#x27;./App&#x27;;
+
+const root = ReactDOM.createRoot(document.getElementById(&#x27;root&#x27;));
+
+root.render(
+  &lt;BrowserRouter&gt;
+    &lt;App /&gt;
+  &lt;/BrowserRouter&gt;,
+);</code></pre><p id="2e7d53eb-b617-4363-8f06-2cf3f125f3bf" class="">
+</p><p id="5790a0e0-0935-4d24-97cc-ec3b8f37468b" class="">
+</p><hr id="126cb77d-15fa-4c76-99d0-7f0a6fa255b3"/><h1 id="11f9d7c2-ee31-4667-9040-5eff487cb491" class="">페이지 컴포넌트 생성</h1><p id="7fbf70d3-2ed5-4bb6-80ef-63f8f873b9a7" class="">리액트 라우터를 통해 여러 페이지로 구성된 웹 애플리케이션을 만들기 위해 각 페이지에서 사용할 컴포넌트를 만들 차례입니다.</p><p id="e8c8f177-5379-41ee-869c-71fcf2b9f329" class="">사용자가 웹 사이트에 들어왔을 때 가장 먼저 보여지게 될 Home 페이지 컴포넌트와 웹 사이트를 소개하는 About 페이지 컴포넌트를 만들어봅시다.</p><h3 id="718b58da-a82e-42bb-acc1-a5fe14474a0d" class="">pages/Home.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="3a61cb77-8201-4134-ad22-e22b074441a2" class="code"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">const Home = () =&gt; {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Home&lt;/h1&gt;
+      &lt;p&gt;가장 먼저 보여지는 페이지입니다.&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default Home;</code></pre><h3 id="3b9d6248-7860-4042-ae46-95b54eb447a9" class="">pages/About.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="78471b39-8cc1-4089-8c2a-f1c345433383" class="code"><code class="language-JavaScript" style="white-space:pre-wrap;word-break:break-all">const About = () =&gt; {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;소개&lt;/h1&gt;
+      &lt;p&gt;리액트 라우터를 사용해 보는 프로젝트입니다.&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default About;</code></pre><p id="f97ea429-49e1-401f-b168-58d6f13b74ec" class="">pages 경로에 넣어주는 이유는 단순히 페이지를 위한 컴포넌트들을 다른 파일들과 구분하기 위함</p><p id="e99c421e-f402-4def-95b6-896fd48e0d97" class="">
+</p><hr id="186f9bc1-af32-48a0-bde5-5b3d14707eba"/><h2 id="ffcdb847-22e1-4078-b5ae-250daf932c8d" class="">Route 컴포넌트로 특정 경로에 원하는 컴포넌트 보여주기</h2><h3 id="b488a762-7df0-4c7a-aa8a-d8a36ee8c133" class="">App.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="adee6175-fb2d-4109-8c28-c1550ea7c7e3" class="code"><code class="language-JavaScript">import { Route, Routes } from &#x27;react-router-dom&#x27;;
+import About from &#x27;./pages/About&#x27;;
+import Home from &#x27;./pages/Home&#x27;;
+
+const App = () =&gt; {
+  return (
+    &lt;Routes&gt;
+	    &lt;Route path=&quot;/&quot; element={&lt;Home /&gt;} /&gt;
+	    &lt;Route path=&quot;/about&quot; element={&lt;About /&gt;} /&gt;
+	  &lt;/Routes&gt;  
+  )
+}
+
+export default App;</code></pre><p id="9f1d76f4-9018-4831-8d0b-eaa5642917b2" class="">
+</p><p id="2d8f23a9-1863-499a-9764-05c3fd397a27" class=""><strong>&lt;Route path=&quot;</strong><mark class="highlight-yellow_background"><strong>/</strong></mark><strong>&quot; element={</strong><mark class="highlight-blue_background"><strong>&lt;Home /&gt;</strong></mark><strong>} /&gt;<br/>&lt;Route path=&quot;<br/></strong><mark class="highlight-yellow_background"><strong>/about</strong></mark><strong>&quot; element={</strong><mark class="highlight-blue_background"><strong>&lt;About /&gt;</strong></mark><strong>} /&gt;</strong><div class="indented"><p id="85cce30d-3ecc-4425-bafc-63fea52d167d" class="">사용자의 브라우저 주소 경로(노란색 부분)에 따라 우리가 원하는 컴포넌트를 보여주려면 Route라는 컴포넌트를 통해 라우트 설정을 해줘야한다.</p><p id="3d98f9a4-80f7-4b38-8691-c66f4118ce95" class="">Route 컴포넌트는 Routes 컴포넌트 내부에서 사용되어야 한다. </p></div></p><figure id="408aaab8-f913-4a71-820e-aa2666711a8a" class="image"><a href="Untitled.png"><img style="width:546.9874877929688px" src="Untitled.png"/></a></figure><p id="22575315-c143-41f2-bcd9-90d34aeb04a5" class="">
+</p><hr id="811ab200-53e1-40f1-a081-2875641f843a"/><h2 id="2844ab75-2344-4165-a791-6ef48f7a2ca6" class="">Link 컴포넌트를 사용해 다른 페이지로 이동하는 링크 보여주기</h2><p id="001978ce-312f-48d0-864a-f11b8e0a21b4" class="">Link 컴포넌트는 React Router에서 제공하는 라우팅을 위한 컴포넌트 중 하나이다. </p><p id="e3714a1e-bdc7-4cf2-841c-71e9bd77314b" class="">컴포넌트는 웹 어플리케이션에서 다른 페이지로 이동할 때 <mark class="highlight-yellow_background"><strong>페이지를 새로고침 하지 않고 애플리케이션 상태를 유지하면서 페이지를 이동</strong></mark>할 수 있도록 해준다.</p><h3 id="857566df-1fac-4dff-a352-72cde387fa97" class="">pages/Home.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="c28488f2-ec72-47fd-b05b-3d89dd2c49ca" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import { Link } from &quot;react-router-dom&quot;;
+
+function Home() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Home&lt;/h1&gt;
+      &lt;p&gt;가장 먼저 보여지는 페이지입니다.&lt;/p&gt;
+      &lt;Link to=&quot;/about&quot;&gt;About&lt;/Link&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default Home;</code></pre><p id="df5f30ca-6acf-4a86-9e42-023c247394c6" class=""><strong>Link 컴포넌트는a 태그 대신 사용된다.</strong> <div class="indented"><p id="900cf810-9e57-4ee3-916c-5ca14cf28fde" class="">a 태그는 페이지를 새로고침하기 때문에 애플리케이션의 상태를 잃어버리게 된다. </p><p id="f9876102-896f-4ca8-8d68-0c969ea4f6ad" class="">하지만 Link 컴포넌트는 클릭 이벤트를 가지고 있지만 페이지를 새로고침하지 않으며 <mark class="highlight-yellow_background"><strong>브라우저의 주소창의 URL을 변경</strong></mark>시켜준다.</p><p id="cb46fd0b-fe57-4158-8921-808930d79221" class="">
+</p></div></p><p id="f665c4e6-2a4f-4295-bafe-0b56a492dfd7" class=""><strong>&lt;Link </strong><mark class="highlight-red_background"><strong>to</strong></mark><strong>=&quot;/about&quot;&gt;About&lt;/Link&gt;</strong><div class="indented"><p id="1b328f41-92f2-4f9e-a6fc-9712f699f7ef" class=""><mark class="highlight-yellow_background"><strong>Link 컴포넌트에서는 </strong></mark><mark class="highlight-red_background"><strong>to</strong></mark><mark class="highlight-yellow_background"><strong> 속성을 이용해 이동하고자하는 페이지의 경로를 지정</strong></mark>할 수 있다. 이 속성은 문자열 형태로 경로를 전달할 수 있다.</p></div></p><p id="812c819e-8899-4ed0-9a79-4a2e131c732b" class="">
+</p><hr id="38cdeb8c-ac8d-411d-9a3d-29872f67d36b"/><h1 id="e16f31c0-f128-4194-9f61-01bcb9b02625" class="">URL 파라미터와 쿼리스트링</h1><p id="34a4c890-fd46-4891-8975-5b191fe043ee" class="">페이지 주소를 정의할 때 유동적인 값을 사용해야할 때도 있다. </p><p id="7964903f-a4d9-46ad-b683-98aad7af0927" class="">이 경우, URL 파라미터와 쿼리스트링을 사용하는데, 이것들은 웹 브라우저에서 특정 페이지로 이동하거나 데이터를 전송할 때 사용하는 방법이다.</p><p id="603ff9bd-5c9e-4f5a-9ad6-6ba5ee6a166f" class="">
+</p><p id="176f2001-ed24-4783-a69a-83e58792b805" class=""><strong>URL 파라미터</strong>는 URL 경로 뒤에 슬래시(/)로 구분된 값을 넣는 형태이다. </p><ul id="3ba5cfaf-32c5-40d9-8e92-9421d2e3ec88" class="bulleted-list"><li style="list-style-type:disc">URL 파라미터 예시: https://example.com<mark class="highlight-yellow_background">/profile/velopert</mark></li></ul><p id="065eaa00-61d7-45c7-9a59-cb2d01028457" class="">
+</p><p id="2dcc10c7-9db0-495d-8825-494ac5b7fa7e" class=""><strong>쿼리스트링</strong>은 주소 뒷부분에 물음표(?) 문자열 이후에 key=value로 값을 정의하고 &amp;로 구분하는 형태이다.</p><ul id="3de53dc3-8ca8-4a7d-9b85-f323bbbfae5a" class="bulleted-list"><li style="list-style-type:disc">https://example.com/search<mark class="highlight-yellow_background">?q=apple&amp;category=fruits</mark></li></ul><p id="9d80a685-5af6-4fc7-96c2-2da443a0a65e" class="">
+</p><p id="6d3a5531-3edc-4644-b0ab-44ac1188cc60" class=""><strong>URL파라미터</strong>는 주로 ID 또는 이름을 사용하여 <strong>특정 데이터를 조회</strong>할 때 사용하고, </p><p id="bfdff52a-3b11-4d98-ae5e-d680b1c9ff85" class=""><strong>쿼리스트링</strong>은 키워드 검색, 페이지네이션, 정렬 방식 등 <strong>데이터 조회에 필요한 옵션을 전달</strong>할 때 사용합니다.</p><p id="7f49bc70-3ae3-43d9-9ac0-d0c3a13712f0" class="">
+</p><h2 id="094038d3-c01d-4386-b232-d00bd6010d27" class="">URL 파라미터</h2><h3 id="90d5cf60-5031-4deb-830c-5e5b71899444" class="">pages/Profile.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="d984cc0e-8245-43cb-8ba5-4f5b0cc6a233" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import { useParams } from &quot;react-router-dom&quot;;
+
+const data = {
+  minsu: {
+    name: &quot;민수&quot;,
+    message: &quot;hello&quot;
+  },
+  gildong: {
+    name: &quot;길동&quot;,
+    message: &quot;bye&quot;
+  }
+};
+
+const Profile = () =&gt; {
+  const params = useParams();
+
+  let profile = data[params.username];
+  
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;User Profile&lt;/h1&gt;
+      {profile ? (
+        &lt;div&gt;
+          &lt;h2&gt;{profile.name}&lt;/h2&gt;
+          &lt;p&gt;{profile.message}&lt;/p&gt;
+        &lt;/div&gt;
+      ):(
+        &lt;p&gt;존재하지 않는 프로필 입니다.&lt;/p&gt;
+      )}
+    &lt;/div&gt;
+  )
+}
+
+export default Profile;</code></pre><p id="da34e671-c7d1-40b9-8158-5707dae2e40d" class="">URL 파라미터는 useParams라는 훅을 사용하여 객체 형태로 조회할 수 있습니다.</p><p id="385e46d2-9f81-41e1-8904-f9df4a4b0bf9" class="">
+</p><p id="540103a3-a663-4ee9-bed1-7be0637bd9db" class=""><strong>const data = {…};</strong><div class="indented"><p id="7d998cca-2e6f-4d8e-89b2-ecf72d953e35" class="">data 객체에 프로필 정보들을 담았다.</p></div></p><p id="3058863a-d6c4-402b-adde-b481991e32de" class=""><mark class="highlight-yellow_background"><strong>const params = useParams();</strong></mark><div class="indented"><p id="58f8fd11-05d8-4244-aca9-eb07e6dd18db" class="">params URL 파라미터를 통해 프로필을 조회</p></div></p><p id="c97ae373-9555-4c8e-9904-d56254f235f0" class="">
+</p><p id="7765ebb6-7013-454f-8e10-ebfefacd738b" class="">프로필이 존재하면 프로필 정보를 보여주고 존재하지 않으면 “존재하지 않는 프로필 입니다”라는 문구를 보여주는 로직을 작성</p><h3 id="ff5aeffb-8f4f-40f8-b8b7-54fe155a1b23" class="">App.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="e6103014-1f9d-4223-a4ed-22657b098f01" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import { Route, Routes } from &#x27;react-router-dom&#x27;;
+import About from &#x27;./pages/About&#x27;;
+import Home from &#x27;./pages/Home&#x27;;
+import Profile from &quot;./pages/Profile&quot;;
+
+function App() {
+	return(
+	  &lt;Routes&gt;
+      &lt;Route path=&quot;/&quot; element={&lt;Home /&gt;} /&gt;
+      &lt;Route path=&quot;/about&quot; element={&lt;About /&gt;} /&gt;
+      &lt;Route path=&quot;/profiles/:username&quot; element={&lt;Profile /&gt;} /&gt;
+    &lt;/Routes&gt;
+	);
+}
+
+export default App;</code></pre><p id="f51d2acf-9128-4820-a32a-c0d93088d0d4" class="">
+</p><p id="dd6bc4a7-591f-4a90-b3b3-590d2e2e1e01" class="">URL 파라미터는 <mark class="highlight-yellow_background">/profiles/:username </mark>과 같이 경로에 :를 사용하여 설정</p><p id="c718814e-7112-4c6b-9421-896ea81eccb8" class="">만약 URL 파라미터가 여러 개인 경우에는 <mark class="highlight-yellow_background">/profiles/:username/:field</mark>와 같은 형태로 설정할 수 있다.</p><p id="29e5c76d-8bc3-4dd4-b606-8f1ff84d5224" class="">
+</p><h3 id="5527263f-3ea0-4c7b-8ccb-3308406cd8bd" class="">Profile 페이지로 이동할 수 있도록 Home에 Link컴포넌트 를 추가</h3><h3 id="e3d8c221-3ee6-4078-8519-9bb7d2433059" class="">Home.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="42cdb436-fefe-4822-a32f-49d27239eb46" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import { Link } from &quot;react-router-dom&quot;;
+
+function Home() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Home&lt;/h1&gt;
+      &lt;p&gt;가장 먼저 보여지는 페이지입니다.&lt;/p&gt;
+      &lt;ul&gt;
+        &lt;li&gt;
+          &lt;Link to=&quot;/about&quot;&gt;About&lt;/Link&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+          &lt;Link to=&quot;/profiles/minsu&quot;&gt;profile1&lt;/Link&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+          &lt;Link to=&quot;/profiles/gildong&quot;&gt;profile2&lt;/Link&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+          &lt;Link to=&quot;/profiles/void&quot;&gt;존재하지 않는 프로필&lt;/Link&gt;
+        &lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default Home;</code></pre><p id="0b568914-fbff-414e-8fed-109dfb878363" class="">
+</p><hr id="1e767512-e3e3-4875-82eb-09ed9250fc8c"/><h1 id="fb327ec8-d9ec-4ab0-aa83-1f51dd24da60" class="">쿼리스트링</h1><p id="321fa666-139f-4db0-a2a8-d077a416b06b" class="">쿼리스트링은 URL의 끝 &quot;?&quot; 뒤에 파라미터를 나타내는 문자열을 추가해 서버에 요청할 때 추가 정보를 전달하는 방법이다</p><h3 id="ae9375a8-e590-4f2c-a2a0-8e172e31d3d6" class="">About.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2885fa01-40ed-42bc-b916-b089ae7fb911" class="code"><code class="language-TypeScript">import { useLocation } from &quot;react-router-dom&quot;;
+
+function About() {
+  const location = useLocation();
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;소개&lt;/h1&gt;
+      &lt;p&gt;리액트 라우터를 사용해 보는 프로젝트입니다.&lt;/p&gt;
+      &lt;p&gt;쿼리스트링 : {location.search}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default About;</code></pre><p id="133fe2f6-12ff-4f3b-a2e3-06fc07bcbf90" class="">useLocation훅 = location 객체를 반환 (이 객체는 현재 사용자가 보고 있는 페이지의 정보를 지니고 있다)</p><ul id="de2a4270-f852-4326-94fe-3135f346cdc2" class="bulleted-list"><li style="list-style-type:disc">pathname : 현재 주소의 경로 (쿼리스트링 제외)</li></ul><ul id="85f62367-b478-4bcc-9edf-8e25c2a218b1" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-yellow_background">search : 맨 앞의 ? 문자를 포함한 쿼리스트링 값</mark></li></ul><ul id="a93f4986-ee18-4ce5-8360-e1824339d8f7" class="bulleted-list"><li style="list-style-type:disc">hash : 주소의 # 문자열 뒤의 값 (주로 History API가 지원되지 않는 구형 브라우저에서 클라이언트 라우팅을 사용할 때 쓰는 해시 라우터에서 사용합니다)</li></ul><ul id="e2444750-d1dd-47cb-8913-b902a9cd6674" class="bulleted-list"><li style="list-style-type:disc">state : 페이지로 이동할 때 임의로 넣을 수 있는 상태 값</li></ul><ul id="c481566a-cae5-4389-a70d-566f1c77ed13" class="bulleted-list"><li style="list-style-type:disc">key : location 객체의 고유값, 초기에는 default이며 페이지가 변경될 때마다 고유의 값이 생성됨</li></ul><p id="511c6ae4-b683-4d67-9027-4c2cce110157" class="">
+</p><figure id="4b5fb48b-fff1-48c9-b9d5-a0b3a8f600b7" class="image" style="text-align:left"><a href="%25EC%25BA%25A1%25EC%25B2%2598.jpg"><img style="width:658.9630737304688px" src="%25EC%25BA%25A1%25EC%25B2%2598.jpg"/></a></figure><p id="ab8da36e-081f-4f0a-ae38-7c44f38476c6" class="">이 문자열에서 ?를 지우고 &amp;를 분리한 뒤 key와 value로 파싱하는 작업을 거쳐야 하는데, 이 작업은 useSearchParams라는 Hook을 통해 쉽게 다룰 수 있다.</p><p id="7e96334d-097f-452b-bb2c-4f30c042098a" class="">
+</p><h3 id="fd898f83-c15e-4000-be6c-d95881cb93ff" class="">About.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="e206f213-d0b6-447b-8d5b-b73f87d65fe8" class="code"><code class="language-TypeScript">import { useSearchParams } from &quot;react-router-dom&quot;;
+
+function About() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const detail = searchParams.get(&quot;detail&quot;);
+  const page = parseInt(searchParams.get(&quot;page&quot;) || &quot;0&quot;);
+
+  function onToggleDetail() {
+    setSearchParams((prev) =&gt; ({
+      ...prev,
+      detail: detail === &quot;true&quot; ? &quot;false&quot; : &quot;true&quot;,
+      page,
+    }));
+  }
+
+  function onIncreasePage() {
+    setSearchParams((prev) =&gt; ({ ...prev, detail, page: page + 1 }));
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;소개&lt;/h1&gt;
+      &lt;p&gt;리액트 라우터를 사용해 보는 프로젝트입니다.&lt;/p&gt;
+      &lt;p&gt;detail : {detail}&lt;/p&gt;
+      &lt;p&gt;page : {page}&lt;/p&gt;
+      &lt;button onClick={onToggleDetail}&gt;Toggle detail&lt;/button&gt;
+      &lt;button onClick={onIncreasePage}&gt;page + 1&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default About;</code></pre><p id="3e0f9520-c500-4398-baec-e468a78c295b" class="">useStateParams는 배열 타입의 값을 반환하며, <div class="indented"><p id="7c3a7445-4c9f-4110-b67a-ae2301b55c72" class="">첫 번째 원소는 쿼리 파라미터를 조회하거나 수정하는 메서드들이 담긴 객체를 반환한다. <div class="indented"><p id="cc82bc8a-3b48-4b81-b8a1-672df4421e41" class="">get 메서드를 통해 특정 쿼리파라미터를 조회할 수 있고, </p><p id="970802d1-8622-4159-af79-03b6de02047f" class="">set 메서드를 통해 특정 쿼리파라미터를 업데이트할 수 있다. </p><p id="a1927960-ebae-412a-876e-34106d50755c" class="">만약 조회 시 쿼리파라미터가 존재하지 않는다면 null로 조회된다. </p></div></p></div></p><p id="df598150-409c-4097-92f0-6c2a3cbf2e34" class=""><div class="indented"><p id="5c66cdac-dc92-492f-b48a-a7949fb15cab" class="">두 번째 원소는 쿼리파라미터를 객체 형태로 업데이트 할 수 있는 함수를 반환한다.<div class="indented"><p id="3d9af2f0-e3ef-4e31-a6a3-fcfa85682d53" class="">쿼리파라미터를 사용할 때 주의할 점은 쿼리파라미터를 조회할 때의 값은 무조건 string이라는 것이다. </p><p id="db14e75f-5cfa-4649-ab16-71018ffbf429" class="">즉, true / false 값을 넣는다면 값을 비교할 때 &#x27;true&#x27;와 같이 따옴표로 감싸서 비교해야하고, 숫자를 다룰 경우 parseInt를 사용해줘야 한다.</p></div></p></div></p><p id="f5661fed-05f2-44b6-ac26-8bcef3b1008a" class="">
+</p><p id="8524da5a-8cfa-43ea-8389-1b47820524df" class=""><strong>const detail = </strong><mark class="highlight-blue_background"><strong>searchParams</strong></mark><strong>.get(&quot;detail&quot;);</strong><div class="indented"><p id="c9e755e0-d842-4c5c-bb8c-2f749c658d2c" class="">쿼리 파라미터를 조회하여 detail값을 반환</p></div></p><p id="84ebdcef-0fca-4a53-9390-a26ed5538bbb" class="">
+</p><p id="4338e635-53bc-42ac-9230-8ca86f2d465a" class=""><strong>const page = parseInt(</strong><mark class="highlight-blue_background"><strong>searchParams</strong></mark><strong>.get(&quot;page&quot;) || &quot;0&quot;);</strong><div class="indented"><p id="5a415b9b-a6f9-4c5b-947a-bc367f444871" class="">page값이 있으면 값을 리턴하고 없으면 0을 리턴 이때 숫자형으로 변환하여 리턴 </p></div></p><p id="16d0f8b9-55df-4fdb-b402-7b4a8a87ff2b" class="">
+</p><p id="6c406683-f3e1-4003-a7f1-8cff0d45d03e" class=""><mark class="highlight-orange_background"><strong>setSearchParams</strong></mark><strong>((prev) =&gt; ({<br/>    ...prev,<br/>    detail: detail === &quot;true&quot; ? &quot;false&quot; : &quot;true&quot;,<br/>    page,<br/>}));<br/></strong><div class="indented"><p id="6f5a08a0-e068-46e6-bd12-9f40970f2672" class="">파라미터 객체의 detail 값이 true면 false로 false면 true로 변경해주고 page값은 변경하지 않는 코드</p></div></p><p id="b3cdb45b-cf63-470e-9fc6-f7e5ea6ad25f" class="">
+</p><p id="dbef8330-b817-4f6a-9b8b-01b59be69d31" class=""><mark class="highlight-orange_background"><strong>setSearchParams</strong></mark><strong>((prev) =&gt; ({ ...prev, detail, page: page + 1 }));</strong><div class="indented"><p id="6b5d627f-0978-467f-861b-d5a62ba3ea4a" class="">파라미터 객체의 page값을 1증가시키는 코드</p></div></p><figure id="6aa149f4-cab6-4a01-b0ed-f7e3280f3de7" class="image" style="text-align:left"><a href="Untitled%201.png"><img style="width:568.991455078125px" src="Untitled%201.png"/></a></figure><hr id="99b1eede-3824-49f3-9405-5e3d48d89b0d"/><p id="32638a42-4659-402f-b60f-10974efa0d00" class="">
+</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>

@@ -1,0 +1,889 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Styled components</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-default_background {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(0, 0, 0, 0.06); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="06b73aad-1ea9-474f-abd9-1bc7d2d848ec" class="page sans"><header><h1 class="page-title">Styled components</h1><p class="page-description"></p></header><div class="page-body"><h1 id="3b99857f-2ff3-43d2-b2d3-3ec82054c1d3" class="">1. CSS 서식 구현 방법 비교</h1><h2 id="75ea1448-1423-425e-ae7e-0ac080d139fe" class="">예제 #1</h2><h3 id="ebff661a-079f-4b2d-9733-a9d94dd7e5e0" class="">App.jsx</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="d1ea12aa-7abe-458f-ace5-21b929fa8984" class="code"><code class="language-TypeScript">import React, { useState }  from &#x27;react&#x27;
+import &#x27;./App.css&#x27;
+
+function App() {
+	const [color, setColor] = useState(&quot;yellow&quot;);
+	const divClassName = &quot;App &quot; + color;
+
+	return (
+		&lt;div className={divClassName}&gt;
+			&lt;h1&gt;Color&lt;/h1&gt;
+			&lt;select onChange={e=&gt;setColor(e.target.value)} value={color}&gt;
+				&lt;option&gt;yellow&lt;/option&gt;
+				&lt;option&gt;green&lt;/option&gt;
+				&lt;option&gt;blue&lt;/option&gt;
+				&lt;option&gt;red&lt;/option&gt;
+			&lt;/select&gt;
+		&lt;/div&gt;
+	);
+}
+
+export default App;</code></pre><h3 id="c1db45ce-e0a3-4fca-b3b3-6defbfe1258e" class="">App.css</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1bfb8730-8287-422b-8268-d2044a6b66e8" class="code"><code class="language-CSS">div.App {
+  border: 1px solid gray;
+  box-shadow: 5px 5px 5px gray; 
+  padding: 40px;
+  margin: 20px;
+  display: inline-block;
+}
+div.App h1 { margin: 10px; }
+div.App button { padding: 0.5em 1em; }
+div.App select {
+  padding: 4px;
+  width: 150px;
+  font-size: 12px;
+}
+div.yellow {background-color:#ffa;}
+div.green {background-color:#dfd;}
+div.blue {background-color:#ccf;}
+div.red {background-color:#fdd;}</code></pre><h3 id="344d8345-7043-4d72-8d4b-9a7e9edb11f5" class="">최초 렌더링</h3><p id="64268f42-e24f-4985-82be-2daea8b6fc26" class=""><strong>const [</strong><mark class="highlight-teal_background"><strong>color</strong></mark><strong>, setColor] = useState(&quot;yellow&quot;);</strong></p><p id="e72776a5-2b88-4071-a6ee-45e2c59faf3d" class=""><strong>const </strong><mark class="highlight-red_background"><strong>divClassName</strong></mark><strong> = &quot;App &quot; + </strong><mark class="highlight-teal_background"><strong>color</strong></mark><strong>;</strong><div class="indented"><p id="797b7201-b7e2-4623-95b3-78427955542b" class="">처음 렌더링 될 때, <mark class="highlight-teal_background">color </mark>값은 “yellow” 이다.</p><p id="6694c693-0a90-4fb3-987b-45c37a512fbe" class="">따라서 <mark class="highlight-red_background"><strong>divClassName</strong></mark>에 대입되는 값은 “<strong>App yellow</strong>” 이다.</p></div></p><p id="968fb010-86d7-4a82-b44d-a68ed68dbf36" class=""><strong>&lt;div className={</strong><mark class="highlight-red_background"><strong>divClassName</strong></mark><strong>}&gt;</strong><div class="indented"><p id="3d9eaa2b-b316-4afe-bf22-b3cf568bf916" class="">이<strong> Virtual DOM</strong>에 의해서 다음과 같은 <strong>html</strong> 태그가 출력된다.</p><p id="a958945b-ab79-4e2a-a0c1-31f7e490db91" class=""><strong>&lt;div class=”App yellow”&gt;</strong></p><p id="2cab1165-ec0c-482b-a8d4-7926131701ea" class="">이 <strong>html</strong> 태그에는 <mark class="highlight-blue_background"><strong>div.App</strong></mark><strong> {…}</strong> 서식과 <mark class="highlight-blue_background"><strong>div.yellow</strong></mark><strong> {…}</strong> 서식이 적용된다.</p><p id="101b3f1a-4ec9-4003-870f-a71548f63bb8" class="">
+</p></div></p><p id="2db79ac9-7d69-4da6-820e-4e8c0581acb5" class=""><strong>&lt;select onChange={e=&gt;setColor(e.target.value)} value={color}&gt;<br/>	&lt;option&gt;yellow&lt;/option&gt;<br/>	&lt;option&gt;green&lt;/option&gt;<br/>	&lt;option&gt;blue&lt;/option&gt;<br/>	&lt;option&gt;red&lt;/option&gt;<br/>&lt;/select&gt;<br/></strong><div class="indented"><p id="5571a258-b08e-4980-8e88-76b95d4eed36" class="">이 select 태그에서 green 항목을 선택하면,</p><p id="44da9c72-cd68-4f86-854f-39bdbdcbb2e2" class="">setColor(e.target.value) 함수가 호출되어 color 리액트 상태에 “green” 문자열이 대입된다.</p><p id="b393f641-08d4-4014-bc92-5fdcebaeec42" class="">리액트 상태 값이 변경되었으므로, App 컴포넌트가 다시 렌더링되어야 한다.</p><p id="bbb9f553-438d-4f2e-833e-6b941df0cb02" class="">
+</p></div></p><h3 id="7d49143e-64f0-4565-8568-5de53d98f4c5" class="">두 번째 렌더링</h3><p id="451882d5-24cc-406d-ab59-7b0d3fa84ffd" class="">리액트 상태가 변경되어 다시 렌더링 되어야 하므로, App 함수가 다시 호출된다.</p><p id="260ff8d9-5506-44d5-80e6-eed3af3ff84e" class="">
+</p><p id="bb98acb3-7916-4f0f-bc13-a7251f11976d" class=""><strong>App</strong> 함수 본문의 코드들이 실행된다.</p><p id="c3bb12ac-4bd2-4012-a4c3-d5968e6b50db" class=""><strong>const [color, setColor] = useState(”yellow”);</strong></p><p id="199aeaf1-a1a9-4808-b12b-2e98173f0c28" class=""><strong>const divClassName = &quot;App &quot; + color;</strong><div class="indented"><p id="fedcbadb-3cc8-4d88-96c0-cddf4f751a25" class=""><strong>color</strong> 리액트 상태값이 <strong>“green”</strong> 이므로, <strong>divClassName</strong>에 “<strong>App green</strong>” 문자열이 대입된다.</p></div></p><p id="107e8e27-dfde-465f-bb0a-f0b21feec5be" class="">
+</p><p id="42f9e16f-cd61-4f40-b768-61b0211cdcf8" class=""><strong>&lt;div className={</strong><mark class="highlight-red_background"><strong>divClassName</strong></mark><strong>}&gt;</strong><div class="indented"><p id="00e7ef71-35ac-4002-9f11-0fc074cab555" class="">이<strong> Virtual DOM</strong>에 의해서 다음과 같은 <strong>html</strong> 태그가 출력된다.</p><p id="e4e1698d-5960-4af9-8431-55928135cf78" class=""><strong>&lt;div class=”App green”&gt;</strong></p><p id="a7db936e-a53a-4fb1-b092-f8b0840efa0c" class="">이 <strong>html</strong> 태그에는 <mark class="highlight-blue_background"><strong>div.App</strong></mark><strong> {…}</strong> 서식과 <mark class="highlight-blue_background"><strong>div.green</strong></mark><strong> {…}</strong> 서식이 적용된다.</p></div></p><div id="bd1fbf7d-a6bc-4f86-9d98-e1310c3842ef" class="column-list"><div id="cd9349a6-72ea-4b23-a55f-46fcca8a3bec" style="width:43.75%" class="column"><figure id="231dda15-b8e9-4b9b-8293-20de39656d4b" class="image" style="text-align:left"><a href="Untitled.png"><img style="width:262.9971618652344px" src="Untitled.png"/></a></figure></div><div id="c655a4df-b290-40d8-b4ff-49781354e0e5" style="width:56.25%" class="column"><figure id="ae4d031e-3e2c-4027-9103-27bc2eb00425" class="image" style="text-align:left"><a href="Untitled%201.png"><img style="width:267.9971618652344px" src="Untitled%201.png"/></a></figure></div></div><p id="69e33677-f25f-4b54-a336-9d1aa77d5e1a" class="">
+</p><hr id="820ed3b2-60dd-4b00-beac-6ed5e6e1c25b"/><h2 id="36535f32-d3a2-44f4-b7c1-bd362fa141a3" class="">예제 #2</h2><h3 id="71382820-910e-452c-b9ee-118c901d43df" class="">App.jsx</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="d7c3303d-5be8-4dbf-89a9-26cc83b32fee" class="code"><code class="language-TypeScript">import React, { useState }  from &#x27;react&#x27;
+import &#x27;./App.css&#x27;
+
+function App() {
+	const [color, setColor] = useState(&quot;#ffa&quot;);
+
+	return (
+		&lt;div className=&quot;App&quot; style={{backgroundColor: color}}&gt;
+			&lt;h1&gt;Color&lt;/h1&gt;
+			&lt;select onChange={e=&gt;setColor(e.target.value)} value={color}&gt;
+				&lt;option value=&quot;#ffa&quot;&gt;yellow&lt;/option&gt;
+				&lt;option value=&quot;#dfd&quot;&gt;green&lt;/option&gt;
+				&lt;option value=&quot;#ccf&quot;&gt;blue&lt;/option&gt;
+				&lt;option value=&quot;#fdd&quot;&gt;red&lt;/option&gt;
+			&lt;/select&gt;
+		&lt;/div&gt;
+	);
+}
+
+export default App;</code></pre><h3 id="7b189695-25cf-46d1-ae30-4f6079900b16" class="">App.css</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="98acbf67-e08e-441f-b9ce-4d1949930a86" class="code"><code class="language-CSS">div.App {
+  border: 1px solid gray;
+  box-shadow: 5px 5px 5px gray; 
+  padding: 40px;
+  margin: 20px;
+  display: inline-block;
+}
+div.App h1 { margin: 10px; }
+div.App button { padding: 0.5em 1em; }
+div.App select {
+  padding: 4px;
+  width: 150px;
+  font-size: 12px;
+}</code></pre><p id="e06c6d32-8dc0-4fae-83b2-58e49b3f88be" class=""><strong>const [color, setColor] = useState(&quot;#ffa&quot;);</strong><div class="indented"><p id="a5c684f9-fb30-4ceb-8c25-756535c9d307" class="">최초 color 상태값은 #ffa 이다.</p><p id="92a90432-fc62-45e2-83e0-977441cb5ca1" class="">
+</p></div></p><p id="9a1ca5c1-31a9-4332-aa3e-ac0920cff1b1" class=""><strong>&lt;select onChange={e=&gt;setColor(e.target.value)} value={</strong><mark class="highlight-blue_background"><strong>color</strong></mark><strong>}&gt;<br/>	&lt;option <br/></strong><mark class="highlight-yellow_background"><strong>value=&quot;#ffa&quot;</strong></mark><strong>&gt;yellow&lt;/option&gt;<br/>	&lt;option <br/></strong><mark class="highlight-yellow_background"><strong>value=&quot;#dfd&quot;</strong></mark><strong>&gt;green&lt;/option&gt;<br/>	&lt;option <br/></strong><mark class="highlight-yellow_background"><strong>value=&quot;#ccf&quot;</strong></mark><strong>&gt;blue&lt;/option&gt;<br/>	&lt;option <br/></strong><mark class="highlight-yellow_background"><strong>value=&quot;#fdd</strong></mark><strong>&quot;&gt;red&lt;/option&gt;<br/>&lt;/select&gt;<br/></strong><div class="indented"><p id="31a54d16-9117-4ed1-90f6-ea6175b80fd8" class="">select 태그의 선택된 항목이 변경되면,</p><p id="65361142-a2e4-48b8-9a92-04e1e239b683" class="">color 상태의 값은 “#ffa”, “#dfd”, “#ccf”, “#fdd” 중의 하나가 된다.</p></div></p><p id="20f1e896-874c-4a2d-a8f4-8587034a5c98" class="">
+</p><p id="5043a79d-8026-4783-81c7-02ab48073473" class=""><strong>&lt;div className=&quot;App&quot; </strong><mark class="highlight-yellow_background"><strong>style={{backgroundColor: </strong></mark><mark class="highlight-blue_background"><strong>color</strong></mark><mark class="highlight-yellow_background"><strong>}}</strong></mark><strong>&gt;</strong><div class="indented"><p id="588d357d-b7fe-4f89-aee6-f12a6ae6f46c" class="">노란색으로 칠한 부분, 즉 style props는 인라인 서식<strong>{inline style}</strong>이다.</p><p id="7a39653e-f581-46f5-b934-dc6b73cd7c62" class="">style props의 값은 javascript 객체이어야 한다. <strong>예: {backgroundColor: color}</strong></p><p id="8680198b-292c-434e-a63f-b3da973b3ecb" class="">props의 값이 문자열이면 따옴표로 묶지만 <strong>예: value=”hello”</strong></p><p id="ae36f70e-06dd-4850-b295-124e2fb1f4c6" class="">props의 값이 문자열이 아니고 javascript 표현식이면, 중괄호로 묶어야 한다. <strong>예: value={true}</strong></p><p id="a284c273-158f-4c50-b4ab-5038d366e9e1" class="">
+</p><p id="fa56f683-11a5-4e06-b2cd-f457f6df87cf" class="">style props의 값이 javascript 객체니까, <strong>예: {backgroundColor : color}</strong></p><p id="5a4baf94-87e3-4c0b-906a-6bbf98bc5436" class="">중괄호로 묶어야 한다. <strong>예: style={{backgroundColor : color}}</strong></p><p id="ad923b92-35f9-4c6c-90b1-317098df5171" class="">
+</p></div></p><p id="98ccd2e6-6ea9-446e-9b98-4114d816860a" class="">style props로 구현된 인라인 서식에서, CSS 서식명은 camel case로 변경되어야 한다.</p><table id="7e45466c-7939-48fa-bbb2-e1fde26d7838" class="simple-table"><thead class="simple-table-header"><tr id="4733b140-3277-495c-84dd-ed05ccf3972b"><th id="X{HE" class="simple-table-header-color simple-table-header">CSS 서식명</th><th id="Ynav" class="simple-table-header-color simple-table-header">style props 서식명</th></tr></thead><tbody><tr id="4a44f3d4-7f36-4ac6-ab82-f2d2092acbcc"><td id="X{HE" class="">background-color</td><td id="Ynav" class="">backgroundColor</td></tr><tr id="54426463-cce0-4c5d-b9fb-141f9ee6c77f"><td id="X{HE" class="">font-size</td><td id="Ynav" class="">fontSize</td></tr><tr id="5b39d1bb-fdf2-4484-bf00-8c96b01f2383"><td id="X{HE" class="">padding-left</td><td id="Ynav" class="">paddingLeft</td></tr></tbody></table><p id="3e659899-f201-4ce8-ae34-97551a4295e8" class="">그리고 style props로 구현된 인라인 서식에서, CSS 서식의 값은 javascript 표현식이어야 한다.</p><h3 id="e39b42a7-3ca8-47eb-82f6-8df93e483fd3" class="">예</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="7c9d4c9b-5492-4e71-9139-ab99e048a6d5" class="code"><code class="language-Scss">//표준 CSS
+div#App {
+	width: 100px;
+	font-size: 10px;
+	color: blue;
+	background-color:#ffa;
+}
+
+&lt;div id=&quot;App&quot;&gt;
+
+//style props
+const bgcolor = &quot;#ffa&quot;;
+
+&lt;div id=&quot;App&quot; style={{
+	width: &quot;100px&quot;,
+	fontSize: &quot;10px&quot;,
+	color: &quot;blue&quot;,
+	backgroundColor: bgcolor
+}}&gt;</code></pre><p id="58aa6253-d2d6-45a5-a4f1-507ab785e094" class="">
+</p><hr id="561cae29-b548-44ff-8d8c-b749d2a0352c"/><h1 id="c88204ce-60ed-46b2-a272-ef6795623e48" class="">2. styled-components</h1><p id="b1512208-f1e9-4520-8f09-c832b983d8ca" class="">별도의 .css 파일에 서식을 구현하는 것이 약간 번거롭다.</p><p id="c526a13c-e384-4954-b83a-e0e8cb184857" class="">그리고 style props의 값은 javascript 객체 문법이어서, CSS 문법과 달라 조금 헷갈릴 수 있다.</p><p id="c350e830-d580-45a0-a653-94304700bcc7" class="">
+</p><p id="e7ff0ff7-dfbd-4ec2-90bf-24e7afa3c018" class="">styled-components 라이브러리를 사용하면, tsx 파일에 css 서식을 구현할 수 있고,</p><p id="f00d1859-de11-4a86-aca8-5a0ebbff462d" class="">표준 CSS 문법을 사용할 수 있고, 상태 변수나 props 변수를 사용할 수도 있다.</p><p id="69c0b9a9-67d1-4ef0-898e-a4013c3338e2" class="">
+</p><h3 id="47059454-095f-4d5c-8822-9d329b80768d" class="">라이브러리 설치</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="b640d69f-bc66-4701-ac6e-1f136c662b0e" class="code"><code class="language-Bash">npm install styled-components @types/styled-components</code></pre><p id="5f38cfe5-550c-4969-a004-8b458497bb1b" class="">프로젝트 디렉토리에서 위 명령을 실행하자.</p><p id="48e03827-8028-4959-8da4-7f7377378e76" class="">
+</p><h2 id="bc63d930-72c1-483e-b60b-bd7e1a4b206c" class="">예제 #1</h2><h3 id="c653c75e-9e85-47fc-a42b-e1afff6dd0c9" class="">App.jsx</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="c91eaac0-5c4f-4a85-b22e-45d0fa9f4cbe" class="code"><code class="language-TypeScript">import React, { useState }  from &#x27;react&#x27;
+import styled from &#x27;styled-components&#x27;;
+
+function App() {
+	const [color, setColor] = useState(&quot;#ffa&quot;);
+	const Div = styled.div`
+		border: 1px solid gray;
+		box-shadow: 5px 5px 5px gray;
+		padding: 40px;
+		margin: 20px;
+		display: inline-block;
+		background-color:${color};
+	`;
+
+	const H1 = styled.h1`
+		margin: 10px;
+	`;
+
+	const Select = styled.select`
+		padding: 4px;
+		width: 150px;
+		font-size: 12px;
+	`;
+
+	return (
+		&lt;Div&gt;
+			&lt;H1&gt;Color&lt;/H1&gt;
+			&lt;Select onChange={e=&gt;setColor(e.target.value)} value={color}&gt;
+				&lt;option value=&quot;#ffa&quot;&gt;yellow&lt;/option&gt;
+				&lt;option value=&quot;#dfd&quot;&gt;green&lt;/option&gt;
+				&lt;option value=&quot;#ccf&quot;&gt;blue&lt;/option&gt;
+				&lt;option value=&quot;#fdd&quot;&gt;red&lt;/option&gt;
+			&lt;/Select&gt;
+		&lt;/Div&gt;
+	);
+}
+
+export default App;</code></pre><p id="25800ef1-c650-4ff3-a076-1fae0e2902d8" class="">
+</p><p id="8a9b9c0b-176a-4224-a137-cc06df176f16" class=""><strong>import styled from ‘styled-components’;</strong><div class="indented"><p id="305f66e5-5f25-409a-90fd-e95beaab3ea0" class="">라이브러리 import</p></div></p><p id="1fc28b7a-d8fe-456f-9a83-00d686af0c1d" class=""><strong>const Div = styled.div</strong><mark class="highlight-red_background"><strong>`</strong></mark><strong><br/>	border: 1px solid gray;<br/>	box-shadow: 5px 5px 5px gray;<br/>	padding: 40px;<br/>	margin: 20px;<br/>	display: inline-block;<br/>	background-color:${color};<br/><br/></strong><mark class="highlight-red_background"><strong>`</strong></mark><strong>;</strong><div class="indented"><p id="c3d45ea4-eaf1-4423-a783-6e09f0e242c8" class="">역따옴표 문자 안에 css속성을 입력한다</p><p id="a99ae173-8bfc-459d-b6ad-5d8876531a41" class="">위 코드에 의해, div 태그에 CSS 서식이 적용되어 Div 태그 컴포넌트가 생성된다.</p><p id="2889de39-3ef7-4ea7-888b-a06ce53dfb23" class="">${expression} 부분은 expression(표현식)의 값으로 교체된다.</p><p id="ec7b019f-3c98-4aca-9930-5c235b28b7b4" class="">즉 color 변수의 값이 ‘#ffe’ 이므로, background-color: ‘#ffe’; 가 된다.</p></div></p><p id="3453bc34-b7b9-4ca1-b2b1-118a7f2a4b77" class="">
+</p><p id="9c3c3cc7-61fd-46d0-a528-5fb98cc03082" class="">예제를 좀 더 간결하게 구현할 수 있다.</p><h2 id="2aac6817-52fe-49fc-a72b-833f465843f7" class="">예제 #2</h2><h3 id="9ec10601-6bd7-43e5-b083-265479d8c6a4" class="">App.jsx</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="0884eb04-5d6d-4878-a883-84791cf6c42c" class="code"><code class="language-TypeScript">import React, { useState }  from &#x27;react&#x27;
+import styled from &#x27;styled-components&#x27;;
+
+function App() {
+	const [color, setColor] = useState(&quot;#ffa&quot;);
+	
+	const Div = styled.div`
+		border: 1px solid gray;
+		box-shadow: 5px 5px 5px gray;
+		padding: 40px;
+		margin: 20px;
+		display: inline-block;
+		background-color:${color};
+		&amp; h1 { margin: 10px; }
+		&amp; select { padding:4px; width:150px; font-size: 12px; }
+	`;
+
+	return (
+		&lt;Div&gt;
+			&lt;h1&gt;Color&lt;/h1&gt;
+			&lt;select onChange={e=&gt;setColor(e.target.value)} value={color}&gt;
+				&lt;option value=&quot;#ffa&quot;&gt;yellow&lt;/option&gt;
+				&lt;option value=&quot;#dfd&quot;&gt;green&lt;/option&gt;
+				&lt;option value=&quot;#ccf&quot;&gt;blue&lt;/option&gt;
+				&lt;option value=&quot;#fdd&quot;&gt;red&lt;/option&gt;
+			&lt;/select&gt;
+		&lt;/Div&gt;
+	);
+}
+
+export default App;</code></pre><p id="ff0614f3-7ef3-48dc-a7ba-03c5bce3b38e" class=""><strong>const Div = styled.div`<br/>	border: 1px solid gray;<br/>	box-shadow: 5px 5px 5px gray;<br/>	padding: 40px;<br/>	margin: 20px;<br/>	display: inline-block;<br/>	background-color:${color};<br/><br/></strong><mark class="highlight-yellow_background"><strong>	&amp; h1 { margin: 10px; }<br/>	&amp; select { padding:4px; width:150px; font-size: 12px; }<br/></strong></mark><strong><br/>`;<br/></strong><div class="indented"><p id="8a34109d-e5d9-4157-a5bb-1a4f614af060" class="">Div 내부에 있는 &amp; h1 태그, &amp; select 태그에 서식을 적용한다.</p><p id="0e65f7f5-6444-4d51-93ff-57947a6548ab" class="">이 부분은 표준 CSS 문법이 아니고 SCSS 확장 문법이다.</p><p id="56a3df29-358b-447a-97cf-0611d6632cf2" class="">
+</p><p id="07eaeca7-133b-4fc7-ade6-eef8557240fb" class="">const Div 변수를 App 함수 지역 변수가 아니고, 전역 변수로 구현할 수도 있지만,</p><p id="6a8f2ebe-04e3-4fcb-ac5f-bd4c897ae2e8" class="">${color} 부분은 App 함수 밖으로 나갈 수 없다. color는 App 함수의 지역 변수이기 때문이다.</p><p id="f0693038-8576-4588-b51d-b5d89092eda0" class="">
+</p></div></p><p id="63b5c5ab-510a-437f-89f1-308c16959868" class=""><strong>&amp; h1 { margin: 10px; }</strong><div class="indented"><p id="517e3bba-8614-4857-b972-7aeacbf34c9c" class="">여기서 &amp; 부분은 이 서식이 들어있는 div 태그를 가르킨다.</p><p id="6dcd970f-0a5b-4865-9690-b528fae91fcb" class="">즉 이 서식은 아래와 같다.</p></div></p><p id="fc374686-8770-4efc-b7be-d711afe595b2" class=""><strong>div h1 { margin: 10px; }</strong></p><p id="01c0c113-8f47-4d43-b914-687c09ba48de" class="">
+</p><p id="b07fc213-5936-469c-a210-fe70523418b3" class="">예제를 좀 더 정리해서 구현할 수 있다.</p><h2 id="273914a4-b359-4d61-9566-9bd7e224466d" class="">예제 #3</h2><h3 id="e009d370-4ffa-4cc6-a54a-9b6d4f12543b" class="">App.jsx</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="16d5d0b0-305d-495d-9e76-bd008577366e" class="code"><code class="language-TypeScript">import React, { useState }  from &#x27;react&#x27;
+import styled from &#x27;styled-components&#x27;;
+
+const Div = styled.div`
+	border: 1px solid gray;
+	box-shadow: 5px 5px 5px gray;
+	padding: 40px;
+	margin: 20px;
+	display: inline-block;
+	background-color:${props =&gt; props.color};
+	&amp; h1 { margin: 10px; }
+	&amp; select { padding:4px; width:150px; font-size: 12px; }
+`;
+
+function App() {
+	const [color, setColor] = useState(&quot;#ffa&quot;);
+	
+	return (
+		&lt;Div color={color}&gt;
+			&lt;h1&gt;Color&lt;/h1&gt;
+			&lt;select onChange={e=&gt;setColor(e.target.value)} value={color}&gt;
+				&lt;option value=&quot;#ffa&quot;&gt;yellow&lt;/option&gt;
+				&lt;option value=&quot;#dfd&quot;&gt;green&lt;/option&gt;
+				&lt;option value=&quot;#ccf&quot;&gt;blue&lt;/option&gt;
+				&lt;option value=&quot;#fdd&quot;&gt;red&lt;/option&gt;
+			&lt;/select&gt;
+		&lt;/Div&gt;
+	);
+}
+
+export default App;</code></pre><p id="afbd6a9b-3a2a-4130-af9d-115d2ee97bc4" class=""><strong>const Div = styled.div`<br/>	border: 1px solid gray;<br/>	box-shadow: 5px 5px 5px gray;<br/>	padding: 40px;<br/>	margin: 20px;<br/>	display: inline-block;<br/>	background-color:${<br/></strong><mark class="highlight-yellow_background"><strong>props =&gt; props.</strong></mark><mark class="highlight-red_background"><strong>color</strong></mark><strong>};<br/>	&amp; h1 { margin: 10px; }<br/>	&amp; select { padding:4px; width:150px; font-size: 12px; }<br/>`;<br/></strong></p><p id="f8743c7d-e757-42bf-ab65-5890d7a391bf" class="">이 코드는 서식이 적용된 div 컴포넌트를 생성하여 전역 변수 Div에 대입한다.</p><p id="48660802-0e60-4235-b77e-4f8f3450fb90" class="">CSS 서식이 적용된 div 태그를 전역 변수로 구현 하였다.</p><p id="6e6bc64c-b55b-4f83-9433-3d9f6acbb757" class="">이제 함수형 컴포넌트 본문에는 실행 로직과 태그 부분만 들어 있고</p><p id="72cb9ce3-5069-48f6-8909-e96c4275e378" class="">CSS 서식 부분은 전역 변수로 분리하였기 때문에, 함수형 컴포넌트 본문의 코드를 읽고 수정하기에 편하다.</p><p id="d5999cb4-9e4a-4323-8ecf-5c89f965463e" class="">
+</p><p id="4b61e3c3-a6f6-46e7-8810-1ba965dbffd5" class=""><strong>background-color:${</strong><mark class="highlight-yellow_background"><strong>props =&gt; props.</strong></mark><mark class="highlight-red_background"><strong>color</strong></mark><strong>};</strong><div class="indented"><p id="758b34b7-fb79-4d1f-82f5-a5a844a3c569" class="">이 부분은 background-color 서식에 Div 컴포넌트의 color props 값을 지정하는 코드이다.</p><p id="0e8077aa-c602-4249-9b5b-989f8507398c" class="">즉 이 Div 컴포넌트를 사용할 때, color props 값이 전달되어야 한다.</p><p id="496fad3e-d26e-4d00-b4b3-f3efc3ecc1df" class="">
+</p></div></p><p id="840701ee-0de7-4418-9d3e-d272bad18488" class=""><strong>const [</strong><mark class="highlight-blue_background"><strong>color</strong></mark><strong>, setColor] = useState(&quot;#ffa&quot;);<br/>return (<br/>	&lt;Div <br/></strong><mark class="highlight-red_background"><strong>color</strong></mark><strong>={</strong><mark class="highlight-blue_background"><strong>color</strong></mark><strong>}&gt;</strong><div class="indented"><p id="ee8db53a-f5aa-4f74-b9ab-0785083acf6a" class="">Div 스타일드 컴포넌트(styled component)를 이 부분에 출력한다.</p><p id="5179b656-1c9f-4e85-a2c2-12d34f0f59d9" class="">Div 스타일드 컴포넌트의 color props 값으로 {color} 리액트 상태값을 전달한다.</p><p id="d09d8447-10de-40aa-9667-73fb9d57078b" class="">
+</p></div></p><hr id="8f113df8-0f5f-4b4d-b15c-c04881488ac6"/></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>

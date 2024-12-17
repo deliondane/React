@@ -1,0 +1,1002 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>React.memo &amp; useCallback</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-default_background {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(0, 0, 0, 0.06); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="3012e195-49b5-49fb-b872-7a4dfd17d916" class="page sans"><header><h1 class="page-title">React.memo &amp; useCallback</h1><p class="page-description"></p></header><div class="page-body"><h1 id="c6ecf040-1cfe-46d6-9f0c-8d1b5ffc6c94" class="">렌더링 최적화</h1><p id="2abb1167-1df9-4423-b537-d68cdd3d8551" class=""><br/>리액트 컴포넌트가 렌더링 하는 내용은 다음 두 데이터에 의해 결정된다.<br/><div class="indented"><p id="78df60a6-693b-452c-b9f0-7933831592c4" class="">a) 컴포넌트가 생성한 리액트 상태 (useState)<br/>b) 부모 컴포넌트로부터 전달 받은 props<br/></p></div></p><p id="c9280d49-cab2-4b97-ad3d-82bfaa7d9fcc" class="">따라서 위 두 값 중 하나가 변경되면,<br/>컴포넌트는 다시 렌더링 되어야 한다.<br/></p><p id="c93bd62a-bcf8-48d1-bf52-3cc9f326dd18" class="">부모 컴포넌트가 렌더링 될 때, 모든 자식 컴포넌트들도 렌더링 된다.</p><p id="bc43cdd7-4ee6-4b27-8323-d6d5eb1c5b29" class="">상태, props 둘 다 변경되지 않은 컴포넌트들은 다시 렌더링 되지 않게 만들기 -&gt; 렌더링 최적화</p><p id="04ddef38-6328-4cbe-9d57-8155ed4bb21a" class="">
+</p><h3 id="5f748817-3f00-4e29-8815-a217a34db7fc" class="">CounterA.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="47f40a7f-ff84-4d47-984c-e7265496ca22" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import React, { useState } from &#x27;react&#x27;
+
+function CounterA() {
+	const [value, setValue] = useState(0);
+	return (
+		&lt;div className=&quot;box&quot;&gt;
+			&lt;h1&gt;CounterA&lt;/h1&gt;
+			&lt;button onClick={() =&gt; setValue(value + 1)}&gt;
+				{ value }
+			&lt;/button&gt;
+		&lt;/div&gt;
+	)
+}
+
+export default CounterA;</code></pre><p id="a661e514-9323-4130-a06a-9fc7f200152f" class="">버튼이 클릭되고 value 상태 값이 증가하면면 setValue(value + 1),<br/>이 컴포넌트는 다시 렌더링 되어야 한다.<br/></p><p id="4b644c7a-c049-4d23-ae03-3a70d67f9e51" class="">컴포넌트가 다시 렌더링 되어야 { value } 부분에 새 상태 값을 출력될 수 있다.</p><p id="2090640f-d4f1-4bf0-8b75-cc65b1006e66" class="">
+</p><h3 id="7beb8c2d-70a6-4ad9-b19c-c2e4643720af" class="">참고:</h3><p id="295f9071-51d3-4e05-bc9e-bd1be41351e7" class="">useState 훅으로 만든 상태 데이터 뿐만 아니라<br/>아직 배우지는 않았지만 redux, recoil, context API 등 여러 방법으로 상태 데이터를 만들 수 있다.<br/><div class="indented"><p id="001d6f15-eb53-4984-8c02-5d83033ff8c8" class="">a) 어떤 기술로 만들었는지는 상관 없이, 컴포넌트가 사용하는 상태 데이터<br/>b) 부모 컴포넌트로부터 전달 받은 props<br/>위 두 값 중 하나가 변경되면, 컴포넌트는 다시 렌더링 되어야 한다.<br/></p><p id="5d301b9a-fa1b-4618-898b-ce25b080a10c" class="">
+</p></div></p><hr id="267801b6-0871-4320-b3b7-564f90ecfa5e"/><h2 id="83434604-faa4-4a83-b949-96de74fa6e03" class="">기본 렌더링 정책</h2><p id="3510fe77-9ca1-40a5-9c7a-d18f912f717f" class="">부모 컴포넌트가 다시 렌더링 될 때, 자식 컴포넌트들도 전부 다시 렌더링 된다.<br/>이것이 기본 렌더링 정책이다.<br/></p><p id="8bac7007-fa05-4fef-b29d-6732e9732397" class="">그래서, 새 Todo 항목이 추가되어, TodoRoot 컴포넌트의 todoList 상태가 변경되면,<br/>TodoList 아래 모든 컴포넌트들이 다시 렌더링 되어야 한다.<br/></p><p id="8b3b0b61-8532-43c1-9909-f888072c8f6b" class="">그런데 새 Todo 항목만 추가 되었을뿐이고,<br/>todoList에 이미 들어있던 Todo 항목의 값이 변경되지 않았는데,<br/>변경되지도 않은 Todo 항목들도 다시 렌더링 되어야하지?<br/>이것은 낭비 아닌가?<br/></p><p id="f64e1bdc-be67-409a-92a1-51af13200b06" class="">
+</p><h2 id="2d6cb31b-8e7c-4703-8306-a9b76dbc0889" class="">렌더링 최적화</h2><p id="29ff54e4-a192-4d53-89f0-f8455d484e38" class="">부모 컴포넌트가 다시 렌더링 될 때, 자식 컴포넌트들도 전부 다시 렌더링 되는 것이 기본 정책이지만,<div class="indented"><p id="fa33fdf0-6032-4f0a-864f-0e6a055de607" class="">a) 그 컴포넌트가 관리하는 리액트 상태<br/>b) 부모 컴포넌트로부터 전달 받은 props<br/></p></div></p><p id="01afd92f-b207-4fe9-9925-adf411bdf26c" class="">위 두 값이 변경되지 않은 자식 컴포넌튼 다시 렌더링 될 필요가 없다.</p><p id="d07b9427-1b37-4a29-9800-970597ebac3f" class="">
+</p><p id="bf01658a-01b0-4807-a617-c53d40c4faa7" class="">위 두 값이 변경되었는지 확인해서,<br/>불필요한 렌더링은 막아주는 리액트의 기능이 React.memo 이다.<br/></p><p id="324ed8d6-ad73-436e-9a7f-609e4df38c23" class="">
+</p><hr id="47c08d8b-e8fc-4950-844e-622269286c48"/><h2 id="6dc38658-1a20-4861-afc5-132ec8598ff1" class="">Counter 예제 구현</h2><h3 id="8423c25f-cd73-4816-9314-07c782590fc8" class="">src/CounterA.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2c4ef8d8-221e-401b-bebd-dee76f45fee1" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import React, { useState } from &#x27;react&#x27;
+
+function CounterA() {
+	console.log(&quot;CounterA 호출됨&quot;);
+	const [value, setValue] = useState(0);
+	return (
+		&lt;div className=&quot;box&quot;&gt;
+			&lt;h1&gt;CounterA&lt;/h1&gt;
+			&lt;button onClick={() =&gt; setValue(value + 1)}&gt;
+				{ value }
+			&lt;/button&gt;
+		&lt;/div&gt;
+	)
+}
+
+export default React.memo(CounterA);</code></pre><h3 id="7dbf86ca-b537-4a85-9d3e-362eae158750" class="">src/CounterB.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="428a42cf-6ab3-4a08-8e05-f810402a0393" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import React, { useState } from &#x27;react&#x27;
+
+function CounterB() {
+	console.log(&quot;CounterB 호출됨&quot;);
+	const [value, setValue] = useState(0);
+	return (
+		&lt;div className=&quot;box&quot;&gt;
+			&lt;h1&gt;CounterB&lt;/h1&gt;
+			&lt;button onClick={() =&gt; setValue(value + 1)}&gt;
+				{ value }
+			&lt;/button&gt;
+		&lt;/div&gt;
+	)
+}
+
+export default React.memo(CounterB);</code></pre><p id="8d224ca4-b8b0-4298-b1d0-7d0bf9fce009" class="">
+</p><h3 id="27bdfaae-af25-463c-a844-8634bbe33773" class="">src/GroupComponent.js 생성</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="b526510a-352c-4e50-ad2b-08c5d8480b3c" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import React, { useState } from &#x27;react&#x27;
+import CounterA from &#x27;./CounterA&#x27;
+import CounterB from &#x27;./CounterB&#x27;
+
+function GroupComponent() {
+	console.log(&quot;GroupComponent 호출됨&quot;);
+	const [value, setValue] = useState(0);
+	return (
+		&lt;div className=&quot;box&quot;&gt;
+			&lt;h1&gt;GroupComponent&lt;/h1&gt;
+			&lt;button onClick={() =&gt; setValue(value + 1)}&gt;
+				{ value }
+			&lt;/button&gt;
+			&lt;CounterA /&gt;
+			&lt;CounterB /&gt;
+		&lt;/div&gt;
+	)
+}
+
+export default React.memo(GroupComponent);</code></pre><h3 id="872fee30-6814-4895-affe-f0aab6d2150d" class="">src/App.js 수정</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2aa1515d-c7a8-45ca-9b34-65baeee0b2a5" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import React  from &#x27;react&#x27;
+import &#x27;./App.css&#x27;
+import GroupComponent from &#x27;./GroupComponent&#x27;;
+
+function App() {
+	console.log(&#x27;App 호출됨&#x27;);
+	return (
+		&lt;div className=&quot;box&quot;&gt;
+			&lt;h1&gt;App&lt;/h1&gt;
+			&lt;GroupComponent /&gt;
+		&lt;/div&gt;
+	);
+}
+
+export default React.memo(App);</code></pre><h3 id="8fc71f50-5425-4333-9e7f-987e1393196a" class="">src/App.css 수정</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="33362ec3-82fd-4ca8-9ea6-b489fb584f74" class="code"><code class="language-CSS" style="white-space:pre-wrap;word-break:break-all">h1 { font-size: 11pt; margin: 0; }
+div.box { display: inline-block; margin: 10px; padding: 10px; border: 1px solid gray; }
+button { display: block; padding: 0.2em 2em; margin: 0.5em; }</code></pre><p id="1e1e67ad-9390-467d-a52b-17cd2a57d98b" class="">
+</p><h2 id="74453bd6-8aff-4200-9a80-4b89cb586921" class="">실행</h2><p id="44e9922d-b873-4eef-85b2-bcf21e891aed" class="">F12 개발자의 콘솔 탭에서 컴포넌트들의 렌더링을 확인해 보자.</p><p id="0d6b0e39-2a1c-4f7b-84db-50789fa270e7" class="">상태가 변경된 컴포넌트만 렌더링된다는 것을 확인할 수 있다.</p><p id="a307fca8-35c7-4bc3-a09a-8081266cb92c" class="">부모 컴포넌트가 렌더링 될 때,<br/>상태가 변경되지도 않은 자식 컴포넌트들은 렌더링 되지 않는다.<br/></p><p id="ab986d54-4919-4d5d-a868-832771c7260e" class="">
+</p><h3 id="f0f19710-6eac-4564-a5b9-5f3527c52690" class="">React.memo 제거하고 실행하기</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="dc31685a-1a4b-4880-b366-da8b2ebb990d" class="code"><code class="language-CSS" style="white-space:pre-wrap;word-break:break-all">export default React.memo(CounterA);</code></pre><p id="46f40152-53e1-47b8-9462-a22a84a9d686" class="">위 코드를 다음과 같이 수정하고 다시 실행해 보자.</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="82386066-1623-460a-8bfd-7532c1792181" class="code"><code class="language-CSS" style="white-space:pre-wrap;word-break:break-all">export default CounterA;</code></pre><p id="e6814c9e-64a9-42c4-8112-72e7bb6ac55d" class="">부모 컴포넌트가 렌더링 될 때 마다 CounterA 컴포넌트도 렌더링 되는 것을 확인할 수 있다.</p><p id="463571de-7fa5-42ef-b049-eca92bd87c0a" class="">
+</p><hr id="71dd940c-bebb-43b0-bb4b-187db373f15f"/><h1 id="6aaf1dbd-4ca6-4445-a8e6-16af7877f225" class="">렌더링 최적화와 props</h1><p id="03dad27c-19ef-4f11-be41-53bdfe99d854" class=""><br/>리액트 컴포넌트가 렌더링 하는 내용은 다음 두 데이터에 의해 결정된다.<br/><div class="indented"><p id="9a0268d5-dceb-4379-9edd-1a29613c2783" class="">a) 컴포넌트가 생성한 리액트 상태 (useState)<br/>b) 부모 컴포넌트로부터 전달 받은 props<br/></p></div></p><p id="404d1d92-38a6-4674-85b4-d5d6bf02115d" class="">따라서 위 두 값 중 하나가 변경되면,<br/>컴포넌트는 다시 렌더링 되어야 한다.<br/></p><p id="7d95e434-afb1-49e3-951a-0393a023b1a1" class="">
+</p><p id="0235d036-c032-4617-8fab-dde9d295a4de" class="">중요한 데이터와 그 데이터에 대한 작업은 부모 container 컴포넌트에 모아서 구현하고,<br/>그렇게 구현된 데이터와 작업 함수를 presentation 컴포넌트에 props로 전달하는 것이 보통이다.<br/></p><p id="da794dc3-9697-45ed-b5fd-571e3dd9d544" class="">그렇게 구현된 경우에도 렌더링 최적화가 잘 작동하는지 살펴보자.</p><p id="835b5699-bc5d-4632-bc58-8cb8f8e55e97" class="">
+</p><h2 id="f5070517-7fb0-497a-b404-c6e30cd07f35" class="">Counter 예제 구현</h2><h3 id="50307a89-bbd0-4528-8738-cdf687df6c29" class="">CounterA.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="03e8ca4d-5c51-44d2-be05-fd49245b31e9" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import React from &#x27;react&#x27;
+
+function CounterA({ value, increase }) {
+	console.log(&quot;CounterA 호출됨&quot;);
+	return (
+		&lt;div className=&quot;box&quot;&gt;
+			&lt;h1&gt;CounterA&lt;/h1&gt;
+			&lt;button onClick={increase}&gt;
+				{ value }
+			&lt;/button&gt;
+		&lt;/div&gt;
+	)
+}
+
+export default React.memo(CounterA);</code></pre><h3 id="88494a09-8941-4ace-ad8f-52788befc10a" class="">CounterB.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="03e95c24-c331-4e97-8e06-f4881e973852" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import React from &#x27;react&#x27;
+
+function CounterB({ value, increase }) {
+	console.log(&quot;CounterB 호출됨&quot;);
+	return (
+		&lt;div className=&quot;box&quot;&gt;
+			&lt;h1&gt;CounterB&lt;/h1&gt;
+			&lt;button onClick={increase}&gt;
+				{ value }
+			&lt;/button&gt;
+		&lt;/div&gt;
+	)
+}
+
+export default React.memo(CounterB);</code></pre><h3 id="1d1aad57-5245-4a8b-9482-568dcc6c6d2b" class="">CounterContainer.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="b5cedfc8-b992-44fa-87d6-b74a4dda3f7c" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import React, { useState } from &#x27;react&#x27;
+import CounterA from &#x27;./CounterA&#x27;
+import CounterB from &#x27;./CounterB&#x27;
+
+function CounterContainer() {
+	console.log(&#x27;CounterContainer 호출됨&#x27;);
+	const [countA, setCountA] = useState(0)
+	const [countB, setCountB] = useState(0)
+	const [value, setValue] = useState(0);
+
+	const increaseA = () =&gt; { setCountA(countA + 1); }
+	const increaseB = () =&gt; { setCountB(countB + 1); }
+	
+	return (
+		&lt;div className=&quot;box&quot;&gt;
+			&lt;h1&gt;CounterContainer&lt;/h1&gt;
+			&lt;button onClick={() =&gt; setValue(value + 1)}&gt;
+				{ value }
+			&lt;/button&gt;
+			&lt;CounterA value={countA} increase={increaseA} /&gt;
+			&lt;CounterB value={countB} increase={increaseB} /&gt;
+		&lt;/div&gt;
+	)
+}
+
+export default React.memo(CounterContainer);</code></pre><h3 id="30c9690b-e834-408f-8d1b-7f9638422c33" class="">App.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="63837738-3928-46bc-900e-e24ffcb9d3f9" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import React from &#x27;react&#x27;
+import &#x27;./App.css&#x27;
+import CounterContainer from &#x27;./CounterContainer&#x27;;
+
+function App() {
+	console.log(&#x27;App 호출됨&#x27;);
+	return (
+		&lt;div className=&quot;box&quot;&gt;
+			&lt;h1&gt;App&lt;/h1&gt;
+			&lt;CounterContainer /&gt;
+		&lt;/div&gt;
+	);
+}
+
+export default React.memo(App);</code></pre><p id="8dcc7fd0-b202-441c-8f7e-dc597aa56b20" class="">
+</p><h2 id="067bc148-348c-4474-ac0c-2e3cbf0c704d" class="">실행</h2><p id="ce082efb-db10-41cc-9b1b-3eeb451e549a" class="">버튼을 클릭할 때 마다,<br/>CounterContainer, CounterA, CounterB 컴포넌트들이 언제나 다시 렌더링된다는 것을<br/>chrome 개발자 창의 console 탭에서 확인할 수 있다.<br/></p><p id="9b400d7d-27ea-4348-9be1-fbd6c1ad9c94" class="">
+</p><p id="e178e4cb-52ac-4a85-82d7-1b3d39f01e81" class="">그 이유는 다음과 같다.</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="a7418156-7587-4064-931e-89428f8b0aa2" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">function CounterContainer() {
+	console.log(&#x27;CounterContainer 호출됨&#x27;);
+	const [countA, setCountA] = useState(0)
+	const [countB, setCountB] = useState(0)
+	const [value, setValue] = useState(0);
+	
+	const increaseA = () =&gt; { setCountA(countA + 1); }
+	const increaseB = () =&gt; { setCountB(countB + 1); }
+
+return (
+		&lt;div className=&#x27;box&#x27;&gt;
+			&lt;h1&gt;CounterContainer&lt;/h1&gt;
+			&lt;button onClick={() =&gt; setValue(value + 1)}&gt;
+				{ value }
+			&lt;/button&gt;
+			&lt;CounterA value={countA} increase={increaseA} /&gt;
+			&lt;CounterB value={countB} increase={increaseB} /&gt;
+		&lt;/div&gt;
+		)
+}</code></pre><p id="7deeb556-36bf-4fd8-bd6b-1b60553e7e09" class="">
+</p><p id="e77662e6-9856-4d63-ad20-3a35e9c2078b" class="">increaseA, increaseB 함수가 매번 새로 만들어져서<br/>각각 CounterA, CounterB 컴포넌트의 props로 전달되기 때문이다.<br/></p><p id="0ecd9084-415e-4aa3-85ef-995242cf5504" class="">
+</p><p id="84470fad-41ce-45f4-ac92-6aa6a45c4415" class="">전달된 props 값이 이전과 다르면 컴포넌트는 다시 렌더링 된다.</p><p id="8a55a75f-a97c-4b89-a01a-86c4f65181a3" class="">
+</p><ol type="1" id="7bc49456-5b10-4645-8f9a-9635dfd7fae4" class="numbered-list" start="1"><li>CounterA, CounterB 둘 중 하나의 버튼이 클릭되면</li></ol><ol type="1" id="8e848f0d-4f04-4166-bd76-991f185ee431" class="numbered-list" start="2"><li>CounterContainer 컴포넌트에서 만들어 전달한 increseA, increaseB 둘 중의 한 함수가 호출되고</li></ol><ol type="1" id="73e137a4-8df2-467e-aad1-f8ed51b205ef" class="numbered-list" start="3"><li>setCountA, setCountB 둘 중의 하나가 호출된다.<br/>즉 CounterContainer 컴포넌트의 상태값이 변경된다.<br/></li></ol><ol type="1" id="99281ef6-8b6c-4009-8ace-28385f5edcd6" class="numbered-list" start="4"><li>CounterContainer 컴포넌트가 다시 렌더링된다.<br/>즉 CounterCountainer 함수가 호출된다.<br/></li></ol><ol type="1" id="7d828c4c-e557-42bd-bf29-75b04913add5" class="numbered-list" start="5"><li> CounterContainer 함수 본문에서 increaseA, increaseB의 inner 함수가 다시 생성된다.</li></ol><ol type="1" id="265e9583-7bca-434d-bda7-1802e24cfe30" class="numbered-list" start="6"><li>그렇게 새로 생성된 increaseA, increaseB 함수가<br/>각각 CounterA, CounterB 컴포넌트의 props로 전달된다.<br/></li></ol><ol type="1" id="74ad9c92-0953-4b75-ae4e-e6e4fa2ecfcb" class="numbered-list" start="7"><li>비록 value props 값은 전과 같더라도<br/>props로 전달된 increase 함수가 전과 다른 함수이기 때문에,<br/>CounterA, CounterB 컴포넌트는 둘 다 다시 렌더링 된다.<br/></li></ol><h3 id="a8860d68-90e1-4fa6-b97f-7593a35f899a" class="">참고</h3><figure id="f9fde6f0-944d-4d8d-8e45-1cde12c1db54" class="image" style="text-align:left"><a href="Untitled.png"><img style="width:363px" src="Untitled.png"/></a></figure><p id="93f922f5-5593-4add-b58b-e6132028ba52" class="">name속성이 홍길동인 객체를 10번 반복해서 만드는 예제</p><p id="5201fbcc-6c83-433e-8d2e-2e569743ebec" class="">여기서 만들어지는 객체의 값은 같지만 주소가 다르다. 즉 생성된 10개의 객체는 서로 다른 객체 인 것이다.</p><hr id="8908349c-8a59-44b8-a769-d1d4505e3b35"/><h1 id="cdad68c1-f3a9-435f-8142-536d3a2f580f" class="">useCallback 훅</h1><h2 id="85c313e9-eeaf-4f03-bcc8-3757bbc851cc" class="">javascript의 closure</h2><h3 id="2f09e82d-c9cb-48d9-ace3-56e59115aa0c" class="">closure1.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="954bc982-6e09-4027-b576-05e742b1bd32" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">function outterFunc(a) {
+	let innerFunc = (i) =&gt; i * a;
+	return innerFunc;
+}
+
+const f1 = outterFunc(2);
+const f2 = outterFunc(4);
+
+console.log(f1(3)); //6
+console.log(f2(3)); //12</code></pre><p id="d461dbc8-c252-4e54-9132-609414fe2bed" class="">
+</p><p id="01f380a2-0ad4-4c6c-9474-8e7537b620d2" class="">outterFunc 함수는 innerFunc 함수를 만들어 리턴한다.</p><p id="ce54745f-28e9-4ee5-9f07-6df464085dd9" class="">
+</p><p id="7f1d6cff-8e29-48c0-aecb-88ddd7a19a06" class=""><strong>let innerFunc = (i) =&gt; i * a;</strong><div class="indented"><p id="73842827-1a91-43ed-810e-50e91ffeb8bc" class="">이 코드가 실행될 때 마다, 새 함수가 생성되어 innerFunc 지역 변수에 대입된다.<br/>이렇게 만들어지는 함수의 본문에서 a 변수를 사용하고 있다.<br/>a 지역 변수는 outterFunnc 함수의 변수이다.<br/></p><p id="45b8bd08-44ed-451f-9650-eb5fd18a4380" class="">
+</p><p id="7eeaab12-2876-4f68-b6c8-5dc82bc7e9dd" class="">inner 함수 본문에서 outter 함수의 변수를 사용하다면,<br/>inner 함수가 만들어지는 시점의 outter 함수의 변수가 inner 함수 내부에 캡처 된다.<br/>이렇게 outter 함수의 변수를 캡처한 inner 함수를 closure라고도 부른다.<br/></p><p id="b441125f-7e50-4748-b455-053244983b41" class="">
+</p><p id="a14168fd-1aa4-49c5-b893-aa8dd8b71acc" class="">어떤 함수의 지역 변수와 파라미터 변수는, 그 함수가 호출될 때 만들어지고, 리턴할 때 사라진다.<br/>즉 outterFunc 함수의 변수 a는, outterFunc 함수가 호출될 때마다 다시 만들어진다.<br/></p><p id="b60c309f-c5d3-4b65-a972-1820daf250ab" class="">
+</p></div></p><p id="8f6c5cd6-170f-41fc-b4ea-cc400b6d64df" class=""><strong>const f1 = outterFunc(2);</strong><div class="indented"><p id="05779afa-0187-4f7e-aa4e-f89eb10c88c5" class="">이렇게 outterFunc 함수가 호출될 때 만들어진 a 변수의 값은 2 이다.<br/>f1 변수에 대입되는 함수는 (i) =&gt; i * 2 이다.<br/></p></div></p><p id="9905000e-7213-4551-9d46-aae3ea52121f" class=""><strong>const f2 = outterFunc(4);</strong><div class="indented"><p id="483f9433-c47c-4da1-98e4-874fd796b53a" class="">이렇게 outterFunc 함수가 호출될 때 만들어진 a 변수의 값은 4 이다.<br/>f2 변수에 대입되는 함수는 (i) =&gt; i * 4 이다.<br/></p><p id="b03e212b-48a7-4949-b5e8-7fdb2758fdba" class="">
+</p></div></p><p id="e16b842e-a446-4f87-9864-d01daedc0c34" class="">outterFunc 함수가 두 번 호출되었으니,<div class="indented"><p id="12fdbd47-742a-4975-9c79-0144686b2710" class="">이 함수의 변수 a도 두 번 만들어졌고,<br/>이 함수 내부의 inner 함수도 두 번 만들어졌다.<br/></p><p id="da880b89-57d9-4c90-895b-ecec5a1eeb4d" class="">이렇게 만들어진 두 개의 a 변수는 서로 다른 변수이고,<br/>이렇게 만들어진 두 개의 inner 함수도 서로 다른 함수이다.<br/></p></div></p><p id="5a3138c9-01cc-45a2-bdc6-c291125edace" class="">
+</p><hr id="a9462a14-20e6-4b16-831a-0860df8f803b"/><h3 id="63c58d19-28db-4046-843e-3a410478a7a9" class="">App.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="c4e8a6ab-d944-4dd0-9a4b-aebfaea3fe9a" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import React, { useState } from &#x27;react&#x27;;
+
+function App() {
+	const [count, setCount] = useState(0);
+	const increase = () =&gt; setCount(count + 1);
+	return (
+		&lt;div&gt;
+			&lt;h1&gt;{ count }&lt;/h1&gt;
+			&lt;button onClick={increase}&gt;increase&lt;/button&gt;
+		&lt;/div&gt;
+	);
+}
+
+export default App;</code></pre><p id="3c1339e9-7bbd-40ee-96bf-66b0d9fb9b13" class="">App 컴포넌트가 랜더링 될 때 마다, App 함수가 호출된다.<br/>App 함수가 호출될 때 마다 하늘색으로 칠한 inner 함수가 다시 생성된다.<br/></p><p id="61a0c2ae-be3d-417d-a124-60f7b9ab8df9" class="">
+</p><p id="e63bf857-f825-4189-a275-645968e66abc" class="">하늘색 inner 함수 본문의 count는 outer 함수에 선언된 지역 변수이다.<br/>이 count 값이 inner 함수 본문에 캡쳐되어 포함된다.<br/>즉 하늘색 inner 함수가 생성될 때 마다, inner 함수 본문에, 현재 count 값이 캡쳐되어 포함된다.<br/></p><p id="d28fe2fe-fd8a-4d7b-9e09-31dbbf29b5cd" class="">버튼이 클릭될 때마다 count 값이 변하기 때문에,<br/>그 새 count 값을 캡쳐하여 하늘색 inner 함수가 새로 만들어질 수 밖에 없다.<br/></p><p id="d32fb7c5-5c56-4ced-8dee-f4fd25bdc18c" class="">() =&gt; setCount(count + 1)<br/>외부의 count 값을 캡쳐하는 하늘색 inner 함수는 순수한 함수가 아니다.<br/>이 count 값이 변경될 때 마다 하늘색 inner 함수가 새로 만들어져야 한다.<br/></p><p id="500b9c73-348b-4682-b74e-f4aa2d0bee5e" class="">
+</p><p id="3cf76f18-488f-4dd3-9927-89efb947f2d1" class="">다음과 같이 구현할 수도 있다.</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="409d920b-13c7-4dc3-ac3c-db010a858010" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import React, { useState } from &#x27;react&#x27;;
+
+function App() {
+	const [count, setCount] = useState(0);
+	const increase = () =&gt; setCount(count =&gt; count + 1);
+	return (
+		&lt;div&gt;
+			&lt;h1&gt;{ count }&lt;/h1&gt;
+			&lt;button onClick={increase}&gt;increase&lt;/button&gt;
+		&lt;/div&gt;
+	);
+}
+
+export default App;</code></pre><p id="6bd097b9-3f37-43ee-b153-6fc96be0012e" class=""><strong>() =&gt; setCount(count =&gt; count + 1)</strong><div class="indented"><p id="c7b5e31a-9cae-4a60-9d0a-38013cc63bd8" class="">이 inner 함수는 outter 함수의 count 값을 캡쳐하지 않는다.</p><p id="91b087bd-af36-4af9-8808-61eb19fc0f84" class="">이 inner 함수 본문에서 setCount 함수의 파라미터값은 count =&gt; count + 1 함수이다.<br/>이 함수는 setCount 함수 내부에서 호출된다.<br/>이 함수가 setCount 함수 내부에서 호출될 때, 현재 count 값이 count 파라미터 변수에 전달된다.<br/></p><p id="6ba696cd-735f-4ebc-a893-05a9b004f1c8" class="">count은 App 함수의 지역 변수이다.<br/>count는 count =&gt; count + 1 함수의 파라미터 변수이다.<br/></p></div></p><h3 id="009410e7-3bdf-4c4b-8931-5f2fccd7a567" class="">() =&gt; setCount(count =&gt; count + 1)</h3><p id="783d4f4b-0d7d-48f3-b3d9-e055adce3846" class="">이 연두색 inner 함수는 count 값을 캡쳐하지 않는다.<br/>따라서 이 연두색 inner 함수는 count 값이 변경될 때 마다 다시 만들 필요 없다.<br/></p><p id="21eb3b79-d8ae-455f-8c2c-8ef1a6b6ee33" class="">그렇지만 위와 같이 평범한 inner 함수로 구현하면<br/>App 함수가 호출될 때 마다 연두색 inner 함수가 매번 새로 만들어진다.<br/>이렇게 inner 함수가 불필요하게 새로 만들어지는 것을 막으려면 useCallback 훅을 사용한다.<br/></p><p id="109b2e72-fb3d-4df8-af76-e025121de5a8" class="">
+</p><hr id="83b5c5ec-6927-49ae-abf8-3f15f8d96fb2"/><h2 id="de1f709e-ffcd-4b4a-a9ec-7a74c33b34c0" class="">useCallback 훅</h2><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2d97b87c-1373-4b4f-86d9-493a36914292" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import React, { useState, useCallback } from &#x27;react&#x27;;
+
+function App() {
+	const [count, setCount] = useState(0);
+	const increase = useCallback(() =&gt; setCount(count =&gt; count + 1), [setCount]);
+	return (
+		&lt;div&gt;
+			&lt;h1&gt;{ count }&lt;/h1&gt;
+			&lt;button onClick={increase}&gt;increase&lt;/button&gt;
+		&lt;/div&gt;
+	);
+}
+
+export default App;</code></pre><p id="8b62c624-a554-406b-bf77-018aeadc3859" class="">매번 다시 만들 필요 없는 inner 함수를 다음과 같이 생성하자.<div class="indented"><p id="10b368c4-26ef-48cb-91f0-5a673847a9bc" class="">useCallback(inner 함수, [...]);</p></div></p><p id="41ea951f-bad0-40e8-a75a-74af1abb6ae3" class="">
+</p><p id="2c6a3341-75fb-4b9d-b570-c83921e11896" class="">... 부분은 inner 함수 구현에서 캡처한 외부 항목들의 목록이어야 한다.</p><p id="befe2641-594e-4b79-a5ea-1cd3a3a2fd97" class="">위와 같이 생성하면 inner 함수는 매번 새로 만들지 않고, 전에 만든 함수를 계속 사용한다.<br/>[...] 부분의 값이 바뀌었을 때만 inner 함수를 새로 만든다.<br/></p><p id="c31ba539-78b3-4d2f-aa5e-773fbf63f5ab" class="">
+</p><figure class="callout" style="white-space:pre-wrap;display:flex" id="aac755ff-aa03-407a-bcdb-31fda36ff049"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%">참고: 지금까지 설명이 잘 이해되지 않는다면, 아래 내용을 읽으면 더 헷갈릴 테니 그냥 무시하라.</div></figure><p id="6d6d3c42-adaf-4bf8-adb0-dd04e0d4f8f3" class="">사실 useCallback 훅을 사용해도 inner 함수는 언제나 새로 만들어진다.<br/>useCallback 훅은 함수이고, 이 함수의 첫째 파라미터가 inner 함수이다.<br/>useCallback 함수가 호출될 때 마다 첫째 파라미터 inner 함수가 생성되어서 파라미터로 전달된다.<br/></p><p id="447327a4-17e4-4542-a6f1-fa89642de328" class="">그런데 위 코드에서 useCallback 훅은<div class="indented"><p id="574c7919-198a-4d62-b4e5-8c3442708768" class="">처음 호출될 때 생성되어 파라미터로 전달된 inner 함수만 보관하고,<br/>그 다음 호출될 때 생성되어 파라미터로 전달된 inner 함수들은 무시한다.<br/>그리고 언제나 처음 전달된 inner 함수만 리턴한다.<br/></p></div></p><p id="388c814a-82a2-4621-a124-bf7b584d6c77" class="">과정이야 어쨌든 위 코드의 useCallback 훅이 처음 호출될 때 생성된 하늘색 inner 함수만<br/>계속 사용하게 된다.<br/></p><p id="207b053d-a2d6-4b41-9a71-3a373cf3cd70" class="">
+</p><hr id="be8ea656-4356-4109-bfb4-3eb67de8e14b"/><h1 id="ef67b0a5-e085-4bd3-ae16-3f26c767c4be" class="">렌더링 최적화와 useCallback</h1><p id="82196dfa-0de0-49c1-9884-72c74a57a6fc" class="">앞에서 구현했던 counter 예제를 useCallback을 활용해서 렌더링 최적화를 완성해 보자.</p><p id="b65e049e-d295-4e71-a2b8-039e2ed1ea65" class="">
+</p><h2 id="3cc6b303-7894-4dc7-9f28-e78c019a4d86" class="">Counter 예제 구현</h2><h3 id="424b9157-5dc9-4ca5-85b5-47bf4a64a049" class="">CounterA.js(전과 동일)</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2d193e47-a618-428e-b79c-a6361e2016cd" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import React from &#x27;react&#x27;
+
+function CounterA({ value, increase }) {
+	console.log(&quot;CounterA 호출됨&quot;);
+	return (
+		&lt;div className=&quot;box&quot;&gt;
+			&lt;h1&gt;CounterA&lt;/h1&gt;
+			&lt;button onClick={increase}&gt;
+				{ value }
+			&lt;/button&gt;
+		&lt;/div&gt;
+	)
+}
+
+export default React.memo(CounterA);</code></pre><h3 id="17a29bc4-2937-492f-9889-8ce1ee5a00b0" class="">CounterB.js(전과 동일)</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="3720a1c4-6e2b-4747-8fac-ed398f773944" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import React from &#x27;react&#x27;
+
+function CounterB({ value, increase }) {
+	console.log(&quot;CounterB 호출됨&quot;);
+	return (
+		&lt;div className=&quot;box&quot;&gt;
+			&lt;h1&gt;CounterB&lt;/h1&gt;
+			&lt;button onClick={increase}&gt;
+				{ value }
+			&lt;/button&gt;
+		&lt;/div&gt;
+	)
+}
+
+export default React.memo(CounterB);</code></pre><h3 id="2672752a-f0cb-48a0-b7b8-2fa11e98a2e7" class="">CounterContainer.js</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="a14e9703-c097-4285-b3b3-6d6cfe5ac391" class="code"><code class="language-TypeScript" style="white-space:pre-wrap;word-break:break-all">import React, { useState, useCallback } from &#x27;react&#x27;
+import CounterA from &#x27;./CounterA&#x27;
+import CounterB from &#x27;./CounterB&#x27;
+
+function CounterContainer() {
+	console.log(&#x27;CounterContainer 호출됨&#x27;);
+	const [countA, setCountA] = useState(0)
+	const [countB, setCountB] = useState(0)
+	const [value, setValue] = useState(0);
+
+	const increaseA = useCallback(() =&gt; { setCountA(countA =&gt; countA + 1); }, [setCountA])
+	const increaseB = useCallback(() =&gt; { setCountB(countB =&gt; countB + 1); }, [setCountB])
+
+	return (
+		&lt;div className=&quot;box&quot;&gt;
+			&lt;h1&gt;CounterContainer&lt;/h1&gt;
+			&lt;button onClick={() =&gt; setValue(value + 1)}&gt;
+				{ value }
+			&lt;/button&gt;
+			&lt;CounterA value={countA} increase={increaseA} /&gt;
+			&lt;CounterB value={countB} increase={increaseB} /&gt;
+		&lt;/div&gt;
+	)
+}
+
+export default React.memo(CounterContainer);</code></pre><p id="4709e3be-6fe9-47b1-be11-d0b39d6648c6" class="">
+</p><p id="9eba3654-529b-427c-b72c-66f40efa3435" class="">increaseA 함수는 setCountA를 캡쳐하였고, countA는 캡쳐하지 않았다.<br/>increaseB 함수는 setCountB를 캡쳐하였고, countB는 캡쳐하지 않았다.<br/></p><p id="e2062d95-4641-4e14-97cd-bf3f9aeac99e" class="">
+</p><p id="0e5480d9-0e8e-48bf-9a91-a8498ad4c75e" class="">setCountA 함수와 setCountB 함수는 렌더링될 때 마다 새로 만들어지는 inner 함수가 아니고,<br/>렌더링 할 때 마다 항상 같은 함수이다.<br/></p><p id="a9ec77ad-0130-401d-8b23-aa9133bfd4a4" class=""><br/>useState가 리턴하는 setter 함수는 절대 바뀌지 않고, 언제나 같은 함수를 리턴하기 때문에<br/>useCallback 두 번째 파라미터 배열에 적어줄 필요도 없다.<br/>그래서<br/>  const increaseA = useCallback(() =&gt; { setCountA(countA =&gt; countA + 1); }, [ ])<br/>  const increaseB = useCallback(() =&gt; { setCountB(countB =&gt; countB + 1); }, [ ])<br/></p><p id="07941363-4677-4a52-b6d0-027a76289906" class="">
+</p><p id="f17b3ed0-c627-4c11-91b2-f4e0944463b8" class="">따라서,<br/>increaseA, increaseB inner 함수도 렌더링 될 때 마다 새로 만들어지지 않고,<br/>렌더링 할 때 마다 항상 같은 함수이다.<br/>따라서 캡처 목록에 적어주지 않아도 된다.<br/></p><p id="6b2fe4c4-d476-4b27-bd6c-ca9568a7789f" class="">
+</p><h3 id="a6ed79f2-ab96-4f22-8891-4b1ea72b6e8d" class="">App.js(전과 동일)</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="f22a1324-cee3-48ef-8b6b-ae65c03ff5b8" class="code"><code class="language-JavaScript">import React from &#x27;react&#x27;
+import &#x27;./App.css&#x27;
+import CounterContainer from &#x27;./CounterContainer&#x27;;
+
+function App() {
+	console.log(&#x27;App 호출됨&#x27;);
+	return (
+		&lt;div className=&quot;box&quot;&gt;
+			&lt;h1&gt;App&lt;/h1&gt;
+			&lt;CounterContainer /&gt;
+		&lt;/div&gt;
+	);
+}
+
+export default React.memo(App);</code></pre><h2 id="d222a112-8a3e-4b73-83d9-73286635ab84" class="">실행</h2><p id="1b524e8c-9ad7-4fb1-9bdf-7455403e54a9" class="">CounterA 버튼을 클릭하면 CounterContainer와 CounterA 컴포넌트만 렌더링 되고,<br/>CounterB 버튼을 클릭하면 CounterContainer와 CounterB 컴포넌트만 렌더링 되는 것을 확인할 수 있다.<br/></p><p id="9b03c2e7-7ecd-41f6-9cea-1f3434de5968" class="">
+</p><p id="fb875782-f5cf-4898-a4b2-893af6d30d84" class="">모든 데이터가 CounterContainer의 상태로 구현되었기 때문에,<br/>그 데이터 중 하나가 변경되면 CounterContainer가 렌더링 되어야 하는 것은 피할 수 없다.<br/></p><p id="9f5924b0-86ea-4826-82a8-4b3bfa8bdc82" class="">
+</p><p id="253d63d8-e53e-4a55-a1cb-6390b49f5c03" class="">따라서 컨테이너 컴포넌트에는<div class="indented"><p id="6dd919b8-23c9-4439-aa11-06656ee5ea68" class="">중요한 데이터 상태와, 그 데이터에 대한 작업 함수들만 구현하고,<br/>렌더링 되어야하는 태그 부분은 최소한으로 구현하는 것이 바람직하다.<br/>즉 렌더링 되어야 하는 태그 부분을 프리젠테이션 컴포넌트로 추출해서 구현하는 것이 좋다.<br/></p><p id="f1a25981-6024-449a-ba66-52c392cf3bd7" class="">
+</p></div></p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
